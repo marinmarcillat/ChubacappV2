@@ -1,0 +1,1306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1293</width>
+    <height>754</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>10</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>Chubacapp</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">/* ===================================================== */
+/* set style for logo widget */
+#logoWidget {
+	background-color: rgb(85, 170, 255);
+}
+
+#companyName {
+	color: rgb(255, 255, 255);
+}
+
+/* ===================================================== */
+/* set style for home button */
+#pushButton {
+	padding-left: 15px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+/* ===================================================== */
+/* set style for all the menu buttons */
+#menuWidget QPushButton {
+	text-align: left;
+	border: None;
+}
+
+#menuWidget QPushButton:hover, #widget:hover, #widget_2:hover  {
+	background-color: rgb(222, 222, 222);
+}
+
+#menuWidget QPushButton:disabled  {
+	background-color: rgb(222, 222, 222);
+	color: rgb(0, 0, 0);
+}
+
+/* ===================================================== */
+/* set style for logo second menu buttons */
+#carsWidget QPushButton, #socialWidget QPushButton {
+	padding-left: 40px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+/* ===================================================== */
+/* set style for menu and content widget */
+#stackedWidget, #menuWidget {
+	background-color: rgb(255, 255, 255);
+	border: solid 1px rgb(0, 0, 0);
+}
+</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout_2">
+    <property name="leftMargin">
+     <number>2</number>
+    </property>
+    <property name="topMargin">
+     <number>2</number>
+    </property>
+    <property name="rightMargin">
+     <number>2</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <property name="horizontalSpacing">
+     <number>0</number>
+    </property>
+    <property name="verticalSpacing">
+     <number>2</number>
+    </property>
+    <item row="0" column="1">
+     <widget class="QTextEdit" name="debug">
+      <property name="maximumSize">
+       <size>
+        <width>250</width>
+        <height>16777215</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QSplitter" name="splitter">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="handleWidth">
+       <number>5</number>
+      </property>
+      <widget class="QScrollArea" name="scrollArea">
+       <property name="maximumSize">
+        <size>
+         <width>300</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="widgetResizable">
+        <bool>true</bool>
+       </property>
+       <widget class="QWidget" name="scrollAreaWidgetContents">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>298</width>
+          <height>667</height>
+         </rect>
+        </property>
+        <layout class="QGridLayout" name="gridLayout">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QWidget" name="logoWidget" native="true">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>60</height>
+            </size>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLabel" name="companyName">
+              <property name="font">
+               <font>
+                <pointsize>20</pointsize>
+                <weight>75</weight>
+                <italic>true</italic>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>ChubacApp</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QWidget" name="menuWidget" native="true">
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <property name="spacing">
+             <number>6</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>10</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>10</number>
+            </property>
+            <item>
+             <widget class="QWidget" name="homeWidget" native="true">
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
+               <property name="spacing">
+                <number>0</number>
+               </property>
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QPushButton" name="pushButton">
+                 <property name="font">
+                  <font>
+                   <pointsize>10</pointsize>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>  Home</string>
+                 </property>
+                 <property name="icon">
+                  <iconset>
+                   <disabledon>:/icons/home-4-48.ico</disabledon>
+                  </iconset>
+                 </property>
+                 <property name="checkable">
+                  <bool>false</bool>
+                 </property>
+                 <property name="checked">
+                  <bool>false</bool>
+                 </property>
+                 <property name="flat">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QWidget" name="widget" native="true">
+              <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <property name="spacing">
+                <number>10</number>
+               </property>
+               <property name="leftMargin">
+                <number>15</number>
+               </property>
+               <property name="topMargin">
+                <number>5</number>
+               </property>
+               <property name="rightMargin">
+                <number>15</number>
+               </property>
+               <property name="bottomMargin">
+                <number>5</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="label_2">
+                 <property name="minimumSize">
+                  <size>
+                   <width>20</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>20</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap resource="icons/resource.qrc">:/icons/model_icon_48.ico</pixmap>
+                 </property>
+                 <property name="scaledContents">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_2">
+                 <property name="font">
+                  <font>
+                   <pointsize>10</pointsize>
+                  </font>
+                 </property>
+                 <property name="layoutDirection">
+                  <enum>Qt::RightToLeft</enum>
+                 </property>
+                 <property name="text">
+                  <string>3D models</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="icons/resource.qrc">
+                   <normaloff>:/icons/arrow-29-48.ico</normaloff>
+                   <normalon>:/icons/arrow-208-32.ico</normalon>:/icons/arrow-29-48.ico</iconset>
+                 </property>
+                 <property name="checkable">
+                  <bool>true</bool>
+                 </property>
+                 <property name="flat">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QWidget" name="carsWidget" native="true">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout">
+               <property name="spacing">
+                <number>1</number>
+               </property>
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QCheckBox" name="NavLayer">
+                 <property name="font">
+                  <font>
+                   <pointsize>10</pointsize>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Navigation</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="icons/resource.qrc">
+                   <normaloff>:/icons/path.ico</normaloff>:/icons/path.ico</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="CameraLayer">
+                 <property name="font">
+                  <font>
+                   <pointsize>10</pointsize>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Cameras</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="icons/resource.qrc">
+                   <normaloff>:/icons/camera_48.ico</normaloff>:/icons/camera_48.ico</iconset>
+                 </property>
+                 <property name="checkable">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="ModelLayer">
+                 <property name="font">
+                  <font>
+                   <pointsize>10</pointsize>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>3D model</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="icons/resource.qrc">
+                   <normaloff>:/icons/model_icon_48.ico</normaloff>:/icons/model_icon_48.ico</iconset>
+                 </property>
+                 <property name="checkable">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="OrthoLayer">
+                 <property name="font">
+                  <font>
+                   <pointsize>10</pointsize>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Orthomosaic</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="icons/resource.qrc">
+                   <normaloff>:/icons/img_48.ico</normaloff>:/icons/img_48.ico</iconset>
+                 </property>
+                 <property name="checkable">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QWidget" name="widget_2" native="true">
+              <layout class="QHBoxLayout" name="horizontalLayout_4">
+               <property name="spacing">
+                <number>10</number>
+               </property>
+               <property name="leftMargin">
+                <number>15</number>
+               </property>
+               <property name="topMargin">
+                <number>5</number>
+               </property>
+               <property name="rightMargin">
+                <number>15</number>
+               </property>
+               <property name="bottomMargin">
+                <number>5</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="label_3">
+                 <property name="minimumSize">
+                  <size>
+                   <width>16</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>16</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap resource="icons/resource.qrc">:/icons/reef_48.ico</pixmap>
+                 </property>
+                 <property name="scaledContents">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_5">
+                 <property name="font">
+                  <font>
+                   <pointsize>10</pointsize>
+                  </font>
+                 </property>
+                 <property name="layoutDirection">
+                  <enum>Qt::RightToLeft</enum>
+                 </property>
+                 <property name="text">
+                  <string>Annotations</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="icons/resource.qrc">
+                   <normaloff>:/icons/arrow-29-48.ico</normaloff>
+                   <normalon>:/icons/arrow-208-32.ico</normalon>:/icons/arrow-29-48.ico</iconset>
+                 </property>
+                 <property name="checkable">
+                  <bool>true</bool>
+                 </property>
+                 <property name="flat">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QWidget" name="socialWidget" native="true">
+              <layout class="QVBoxLayout" name="verticalLayout_2">
+               <property name="spacing">
+                <number>1</number>
+               </property>
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QCheckBox" name="AnnotationsLayer">
+                 <property name="font">
+                  <font>
+                   <pointsize>10</pointsize>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>3D annotations</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="icons/resource.qrc">
+                   <normaloff>:/icons/reef_48.ico</normaloff>:/icons/reef_48.ico</iconset>
+                 </property>
+                 <property name="checkable">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="ImprintsLayer">
+                 <property name="font">
+                  <font>
+                   <pointsize>10</pointsize>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Image imprints</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="icons/resource.qrc">
+                   <normaloff>:/icons/img_48.ico</normaloff>:/icons/img_48.ico</iconset>
+                 </property>
+                 <property name="checkable">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="Line" name="line">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="label">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Camera :</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="camera_cb">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_6">
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="label_4">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Project:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="project_label">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_7">
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="label_6">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Image:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="image_label">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_8">
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="label_8">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Navigation:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="nav_label">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+      <widget class="QtInteractor" name="contentWidget" native="true">
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1293</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile_F">
+    <property name="title">
+     <string>File(&amp;F)</string>
+    </property>
+    <addaction name="actionNew_project"/>
+    <addaction name="actionOpen_project"/>
+    <addaction name="actionSave_project"/>
+   </widget>
+   <widget class="QMenu" name="menuView_V">
+    <property name="title">
+     <string>View(&amp;V)</string>
+    </property>
+    <addaction name="actionToolBar"/>
+    <addaction name="actionMenu"/>
+    <addaction name="action3Dmodel"/>
+    <addaction name="actionAnnotation"/>
+   </widget>
+   <widget class="QMenu" name="menuCars">
+    <property name="title">
+     <string>Configuration</string>
+    </property>
+    <addaction name="AddImage"/>
+    <addaction name="AddVideos"/>
+    <addaction name="AddCamera"/>
+    <addaction name="AddNavigation"/>
+    <addaction name="AddAnnotation"/>
+    <addaction name="Add3DModel"/>
+   </widget>
+   <widget class="QMenu" name="menuSocial_Media_S">
+    <property name="title">
+     <string>3D model</string>
+    </property>
+    <addaction name="Reconstruction3D"/>
+    <addaction name="Orthomosaic"/>
+    <addaction name="Gomorphomtrics"/>
+   </widget>
+   <widget class="QMenu" name="menuAnnotations">
+    <property name="title">
+     <string>Annotations</string>
+    </property>
+    <addaction name="Reprojection"/>
+    <addaction name="actionAI_inference"/>
+    <addaction name="Annotation_filter"/>
+   </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="MatissePreprocessing"/>
+    <addaction name="Remove_blur"/>
+    <addaction name="Preferences"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout"/>
+    <addaction name="actionDocumentation"/>
+   </widget>
+   <addaction name="menuFile_F"/>
+   <addaction name="menuView_V"/>
+   <addaction name="menuCars"/>
+   <addaction name="menuSocial_Media_S"/>
+   <addaction name="menuAnnotations"/>
+   <addaction name="menuTools"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>15</width>
+     <height>15</height>
+    </size>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextUnderIcon</enum>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionMenu"/>
+   <addaction name="actionToolBar"/>
+   <addaction name="action3Dmodel"/>
+   <addaction name="actionAnnotation"/>
+  </widget>
+  <widget class="QToolBar" name="toolBar_2">
+   <property name="windowTitle">
+    <string>toolBar_2</string>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>15</width>
+     <height>15</height>
+    </size>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextUnderIcon</enum>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="AddImage"/>
+   <addaction name="AddVideos"/>
+   <addaction name="AddCamera"/>
+   <addaction name="AddNavigation"/>
+   <addaction name="AddAnnotation"/>
+  </widget>
+  <widget class="QToolBar" name="toolBar_3">
+   <property name="windowTitle">
+    <string>toolBar_3</string>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>15</width>
+     <height>15</height>
+    </size>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextUnderIcon</enum>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="Reconstruction3D"/>
+   <addaction name="Orthomosaic"/>
+   <addaction name="Gomorphomtrics"/>
+  </widget>
+  <widget class="QToolBar" name="toolBar_4">
+   <property name="windowTitle">
+    <string>toolBar_4</string>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>15</width>
+     <height>15</height>
+    </size>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="Remove_blur"/>
+   <addaction name="MatissePreprocessing"/>
+  </widget>
+  <widget class="QToolBar" name="toolBar_5">
+   <property name="windowTitle">
+    <string>toolBar_5</string>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>15</width>
+     <height>15</height>
+    </size>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextUnderIcon</enum>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="Reprojection"/>
+   <addaction name="Annotation_filter"/>
+   <addaction name="actionAI_inference"/>
+  </widget>
+  <action name="actionToolBar">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons/resource.qrc">
+     <normaloff>:/icons/top-navigation-toolbar-48.ico</normaloff>:/icons/top-navigation-toolbar-48.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Debug</string>
+   </property>
+  </action>
+  <action name="actionMenu">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons/resource.qrc">
+     <normaloff>:/icons/menu-4-48.ico</normaloff>:/icons/menu-4-48.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Menu</string>
+   </property>
+  </action>
+  <action name="AddImage">
+   <property name="icon">
+    <iconset resource="icons/resource.qrc">
+     <normaloff>:/icons/add_img.ico</normaloff>:/icons/add_img.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Images</string>
+   </property>
+  </action>
+  <action name="AddCamera">
+   <property name="icon">
+    <iconset resource="icons/resource.qrc">
+     <normaloff>:/icons/camera_48.ico</normaloff>:/icons/camera_48.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Camera model</string>
+   </property>
+  </action>
+  <action name="AddNavigation">
+   <property name="icon">
+    <iconset resource="icons/resource.qrc">
+     <normaloff>:/icons/path.ico</normaloff>:/icons/path.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Navigation</string>
+   </property>
+  </action>
+  <action name="Reconstruction3D">
+   <property name="icon">
+    <iconset resource="icons/resource.qrc">
+     <normaloff>:/icons/model_icon_48.ico</normaloff>:/icons/model_icon_48.ico</iconset>
+   </property>
+   <property name="text">
+    <string>3D Reconstruction</string>
+   </property>
+  </action>
+  <action name="Orthomosaic">
+   <property name="icon">
+    <iconset resource="icons/resource.qrc">
+     <normaloff>:/icons/img_48.ico</normaloff>:/icons/img_48.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Orthomosaics</string>
+   </property>
+  </action>
+  <action name="action3Dmodel">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons/resource.qrc">
+     <normaloff>:/icons/model_icon_48.ico</normaloff>:/icons/model_icon_48.ico</iconset>
+   </property>
+   <property name="text">
+    <string>3D models</string>
+   </property>
+   <property name="iconText">
+    <string>3D models</string>
+   </property>
+   <property name="toolTip">
+    <string>3D models</string>
+   </property>
+  </action>
+  <action name="actionAnnotation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons/resource.qrc">
+     <normaloff>:/icons/annotation_48.ico</normaloff>:/icons/annotation_48.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Annotations</string>
+   </property>
+  </action>
+  <action name="actionNew_project">
+   <property name="text">
+    <string>New project</string>
+   </property>
+  </action>
+  <action name="actionOpen_project">
+   <property name="text">
+    <string>Open project</string>
+   </property>
+  </action>
+  <action name="Gomorphomtrics">
+   <property name="icon">
+    <iconset resource="icons/resource.qrc">
+     <normaloff>:/icons/slope.ico</normaloff>:/icons/slope.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Geomorphometrics</string>
+   </property>
+  </action>
+  <action name="actionAI_inference">
+   <property name="icon">
+    <iconset resource="icons/resource.qrc">
+     <normaloff>:/icons/AI_48.ico</normaloff>:/icons/AI_48.ico</iconset>
+   </property>
+   <property name="text">
+    <string>AI inference</string>
+   </property>
+  </action>
+  <action name="Annotation_filter">
+   <property name="icon">
+    <iconset resource="icons/resource.qrc">
+     <normaloff>:/icons/filter.ico</normaloff>:/icons/filter.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Annotation filter</string>
+   </property>
+  </action>
+  <action name="MatissePreprocessing">
+   <property name="text">
+    <string>Matisse Preprocessing</string>
+   </property>
+  </action>
+  <action name="Reprojection">
+   <property name="icon">
+    <iconset resource="icons/resource.qrc">
+     <normaloff>:/icons/ray.ico</normaloff>:/icons/ray.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Reprojection</string>
+   </property>
+  </action>
+  <action name="Remove_blur">
+   <property name="text">
+    <string>Remove blur</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionDocumentation">
+   <property name="text">
+    <string>Documentation</string>
+   </property>
+  </action>
+  <action name="AddAnnotation">
+   <property name="icon">
+    <iconset resource="icons/resource.qrc">
+     <normaloff>:/icons/reef_48.ico</normaloff>:/icons/reef_48.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Annotations</string>
+   </property>
+  </action>
+  <action name="Preferences">
+   <property name="text">
+    <string>Preferences</string>
+   </property>
+  </action>
+  <action name="actionSave_project">
+   <property name="text">
+    <string>Save project</string>
+   </property>
+  </action>
+  <action name="actionAdd_3D_model">
+   <property name="icon">
+    <iconset resource="icons/resource.qrc">
+     <normaloff>:/icons/model_icon_48.ico</normaloff>:/icons/model_icon_48.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Add 3D model</string>
+   </property>
+  </action>
+  <action name="Add3DModel">
+   <property name="icon">
+    <iconset resource="icons/resource.qrc">
+     <normaloff>:/icons/model_icon_48.ico</normaloff>:/icons/model_icon_48.ico</iconset>
+   </property>
+   <property name="text">
+    <string>3D model</string>
+   </property>
+  </action>
+  <action name="AddVideos">
+   <property name="icon">
+    <iconset resource="icons/resource.qrc">
+     <normaloff>:/icons/add_img.ico</normaloff>:/icons/add_img.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Videos</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QtInteractor</class>
+   <extends>QWidget</extends>
+   <header location="global">pyvistaqt</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="icons/resource.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>pushButton_5</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>socialWidget</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>185</x>
+     <y>301</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>348</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>carsWidget</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>161</x>
+     <y>190</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>101</x>
+     <y>258</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action3Dmodel</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>toolBar_2</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>547</x>
+     <y>62</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionAnnotation</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>toolBar_3</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>786</x>
+     <y>48</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionMenu</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>scrollArea</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>101</x>
+     <y>400</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionToolBar</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>debug</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1138</x>
+     <y>403</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

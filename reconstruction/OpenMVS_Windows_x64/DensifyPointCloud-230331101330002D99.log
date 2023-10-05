@@ -1,0 +1,91 @@
+10:13:30 [App     ] Build date: Nov 28 2022, 13:08:56
+10:13:30 [App     ] CPU: Intel(R) Core(TM) i9-10900K CPU @ 3.70GHz (20 cores)
+10:13:30 [App     ] RAM: 127.74GB Physical Memory 128.00TB Virtual Memory
+10:13:30 [App     ] OS: Windows 8 x64
+10:13:30 [App     ] Disk: 106.26GB (951.14GB) space
+10:13:30 [App     ] SSE & AVX compatible CPU & OS detected
+10:13:30 [App     ] Command line: DensifyPointCloud -h
+10:13:30 [App     ] Available options:
+
+Generic options:
+  -h [ --help ]                         produce this help message
+  -w [ --working-folder ] arg           working directory (default current 
+                                        directory)
+  -c [ --config-file ] arg (=DensifyPointCloud.cfg)
+                                        file name containing program options
+  --archive-type arg (=3)               project archive type: 0-text, 1-binary,
+                                        2-compressed binary
+  --process-priority arg (=-1)          process priority (below normal by 
+                                        default)
+  --max-threads arg (=0)                maximum number of threads (0 for using 
+                                        all available cores)
+  -v [ --verbosity ] arg (=2)           verbosity level
+  --cuda-device arg (=-1)               CUDA device number to be used for 
+                                        depth-map estimation (-2 - CPU 
+                                        processing, -1 - best GPU, >=0 - device
+                                        index)
+
+Densify options:
+  -i [ --input-file ] arg               input filename containing camera poses 
+                                        and image list
+  -o [ --output-file ] arg              output filename for storing the dense 
+                                        point-cloud (optional)
+  --view-neighbors-file arg             input filename containing the list of 
+                                        views and their neighbors (optional)
+  --output-view-neighbors-file arg      output filename containing the 
+                                        generated list of views and their 
+                                        neighbors
+  --resolution-level arg (=1)           how many times to scale down the images
+                                        before point cloud computation
+  --max-resolution arg (=2560)          do not scale images higher than this 
+                                        resolution
+  --min-resolution arg (=640)           do not scale images lower than this 
+                                        resolution
+  --sub-resolution-levels arg (=2)      number of patch-match sub-resolution 
+                                        iterations (0 - disabled)
+  --number-views arg (=8)               number of views used for depth-map 
+                                        estimation (0 - all neighbor views 
+                                        available)
+  --number-views-fuse arg (=3)          minimum number of images that agrees 
+                                        with an estimate during fusion in order
+                                        to consider it inlier (<2 - only merge 
+                                        depth-maps)
+  --ignore-mask-label arg (=-1)         integer value for the label to ignore 
+                                        in the segmentation mask (<0 - 
+                                        disabled)
+  --iters arg (=4)                      number of patch-match iterations
+  --geometric-iters arg (=2)            number of geometric consistent 
+                                        patch-match iterations (0 - disabled)
+  --estimate-colors arg (=2)            estimate the colors for the dense 
+                                        point-cloud (0 - disabled, 1 - final, 2
+                                        - estimate)
+  --estimate-normals arg (=2)           estimate the normals for the dense 
+                                        point-cloud (0 - disabled, 1 - final, 2
+                                        - estimate)
+  --sub-scene-area arg (=0)             split the scene in sub-scenes such that
+                                        each sub-scene surface does not exceed 
+                                        the given maximum sampling area (0 - 
+                                        disabled)
+  --sample-mesh arg (=0)                uniformly samples points on a mesh (0 -
+                                        disabled, <0 - number of points, >0 - 
+                                        sample density per square unit)
+  --fusion-mode arg (=0)                depth-maps fusion mode (-2 - fuse 
+                                        disparity-maps, -1 - export 
+                                        disparity-maps only, 0 - depth-maps & 
+                                        fusion, 1 - export depth-maps only)
+  --postprocess-dmaps arg (=7)          flags used to filter the depth-maps 
+                                        after estimation (0 - disabled, 1 - 
+                                        remove-speckles, 2 - fill-gaps, 4 - 
+                                        adjust-filter)
+  --filter-point-cloud arg (=0)         filter dense point-cloud based on 
+                                        visibility (0 - disabled)
+  --export-number-views arg (=0)        export points with >= number of views 
+                                        (0 - disabled, <0 - save MVS project 
+                                        too)
+  --roi-border arg (=0)                 add a border to the region-of-interest 
+                                        when cropping the scene (0 - disabled, 
+                                        >0 - percentage, <0 - absolute)
+  --estimate-roi arg (=2)               estimate and set region-of-interest (0 
+                                        - disabled, 1 - enabled, 2 - adaptive)
+  --crop-to-roi arg (=1)                crop scene using the region-of-interest
+  --remove-dmaps arg (=0)               remove depth-maps after fusion

@@ -1,0 +1,38 @@
+14:19:21 [App     ] Build date: Nov 28 2022, 13:08:56
+14:19:21 [App     ] CPU: Intel(R) Core(TM) i9-10900K CPU @ 3.70GHz (20 cores)
+14:19:21 [App     ] RAM: 127.74GB Physical Memory 128.00TB Virtual Memory
+14:19:21 [App     ] OS: Windows 8 x64
+14:19:21 [App     ] Disk: 32.81GB (1.82TB) space
+14:19:21 [App     ] SSE & AVX compatible CPU & OS detected
+14:19:21 [App     ] Command line: InterfaceCOLMAP -h
+14:19:21 [App     ] 
+Import/export 3D reconstruction from COLMAP (TXT/BIN format) and to COLMAP (TXT format). 
+In order to import a scene, run COLMAP SfM and next undistort the images (only PINHOLE
+camera model supported for the moment).
+14:19:21 [App     ] Available options:
+
+Generic options:
+  -h [ --help ]                         produce this help message
+  -w [ --working-folder ] arg           working directory (default current 
+                                        directory)
+  -c [ --config-file ] arg (=InterfaceCOLMAP.cfg)
+                                        file name containing program options
+  --archive-type arg (=3)               project archive type: 0-text, 1-binary,
+                                        2-compressed binary
+  --process-priority arg (=-1)          process priority (below normal by 
+                                        default)
+  --max-threads arg (=0)                maximum number of threads (0 for using 
+                                        all available cores)
+  -v [ --verbosity ] arg (=2)           verbosity level
+
+Main options:
+  -i [ --input-file ] arg               input COLMAP folder containing cameras,
+                                        images and points files OR input MVS 
+                                        project file
+  -o [ --output-file ] arg              output filename for storing the MVS 
+                                        project
+  --image-folder arg (=images/)         folder to the undistorted images
+  --max-resolution arg (=0)             make sure image resolution are not not 
+                                        larger than this (0 - disabled)
+  -f [ --normalize ] arg (=0)           normalize intrinsics while exporting to
+                                        MVS format

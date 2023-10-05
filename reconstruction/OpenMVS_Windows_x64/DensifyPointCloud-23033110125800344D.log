@@ -1,0 +1,58 @@
+10:12:58 [App     ] Build date: Nov 28 2022, 13:08:56
+10:12:58 [App     ] CPU: Intel(R) Core(TM) i9-10900K CPU @ 3.70GHz (20 cores)
+10:12:58 [App     ] RAM: 127.74GB Physical Memory 128.00TB Virtual Memory
+10:12:58 [App     ] OS: Windows 8 x64
+10:12:58 [App     ] Disk: 106.38GB (951.14GB) space
+10:12:58 [App     ] SSE & AVX compatible CPU & OS detected
+10:12:58 [App     ] Command line: DensifyPointCloud -o C:\Users\Administrateur\Desktop\test_pl3_b1\models\dense.mvs -i C:\Users\Administrateur\Desktop\test_pl3_b1\models\model.mvs
+10:12:58 [App     ] MapSMtoCores for SM 8.6 is undefined; default to use 64 cores/SM
+10:12:58 [App     ] CUDA device 0 initialized: NVIDIA GeForce RTX 3060 (compute capability 8.6; memory 12.00GB)
+10:12:58 [App     ] Camera model loaded: platform 0; camera  0; f 0.712x0.712; poses 218
+10:12:58 [App     ] Scene loaded from interface format (199ms):
+	218 images (218 calibrated) with a total of 439.98 MPixels (2.02 MPixels/image)
+	88130 points, 0 vertices, 0 faces
+10:12:58 [App     ] The camera directions mean is unbalanced; the scene will be considered unbounded (no ROI)
+10:12:58 [App     ] Point-cloud composed of 88130 points with:
+ - visibility info (580789 views - 6.59 views/point):
+	        0 points with 1- views (0.00%)
+	      755 points with 2  views (0.86%)
+	    34547 points with 3  views (39.20%)
+	    52828 points with 4+ views (59.94%)
+	2 min / 6.59014 mean (7.77198 std) / 78 max
+10:12:59 [App     ] error: failed loading image header
+10:12:59 [App     ] error: failed loading image header
+10:12:59 [App     ] error: failed loading image header
+10:12:59 [App     ] error: failed reloading image 'C:/Users/Administrateur/Downloads/OpenMVS_Windows_x64/images/20130916T154515.920Z.jpg'
+10:12:59 [App     ] error: failed reloading image 'C:/Users/Administrateur/Downloads/OpenMVS_Windows_x64/images/20130916T153855.920Z.jpg'
+10:12:59 [App     ] error: failed loading image header
+10:12:59 [App     ] error: failed reloading image 'C:/Users/Administrateur/Downloads/OpenMVS_Windows_x64/images/20130916T153736.640Z.jpg'
+10:12:59 [App     ] error: failed loading image header
+10:12:59 [App     ] error: failed loading image header
+10:12:59 [App     ] error: failed loading image header
+10:12:59 [App     ] error: failed loading image header
+10:12:59 [App     ] error: failed loading image header
+10:12:59 [App     ] error: failed reloading image 'C:/Users/Administrateur/Downloads/OpenMVS_Windows_x64/images/20130916T154336.920Z.jpg'
+10:12:59 [App     ] error: failed loading image header
+10:12:59 [App     ] error: failed reloading image 'C:/Users/Administrateur/Downloads/OpenMVS_Windows_x64/images/20130916T154026.200Z.jpg'
+10:12:59 [App     ] error: failed loading image header
+10:12:59 [App     ] error: failed reloading image 'C:/Users/Administrateur/Downloads/OpenMVS_Windows_x64/images/20130916T154118.439Z.jpg'
+10:12:59 [App     ] error: failed loading image header
+10:12:59 [App     ] error: failed reloading image 'C:/Users/Administrateur/Downloads/OpenMVS_Windows_x64/images/20130916T154216.680Z.jpg'
+10:12:59 [App     ] error: failed loading image header
+10:12:59 [App     ] error: failed loading image header
+10:12:59 [App     ] error: failed reloading image 'C:/Users/Administrateur/Downloads/OpenMVS_Windows_x64/images/20130916T154239.120Z.jpg'
+10:12:59 [App     ] error: failed loading image header
+10:12:59 [App     ] error: failed reloading image 'C:/Users/Administrateur/Downloads/OpenMVS_Windows_x64/images/20130916T154409.920Z.jpg'
+10:12:59 [App     ] error: failed reloading image 'C:/Users/Administrateur/Downloads/OpenMVS_Windows_x64/images/20130916T153931.559Z.jpg'
+10:12:59 [App     ] error: failed reloading image 'C:/Users/Administrateur/Downloads/OpenMVS_Windows_x64/images/20130916T154007.559Z.jpg'
+10:12:59 [App     ] error: failed reloading image 'C:/Users/Administrateur/Downloads/OpenMVS_Windows_x64/images/20130916T154039.440Z.jpg'
+10:12:59 [App     ] error: failed loading image header
+10:12:59 [App     ] error: failed loading image header
+10:12:59 [App     ] error: failed reloading image 'C:/Users/Administrateur/Downloads/OpenMVS_Windows_x64/images/20130916T154211.519Z.jpg'
+10:12:59 [App     ] error: failed loading image header
+10:12:59 [App     ] error: failed reloading image 'C:/Users/Administrateur/Downloads/OpenMVS_Windows_x64/images/20130916T153654.640Z.jpg'
+10:12:59 [App     ] error: failed reloading image 'C:/Users/Administrateur/Downloads/OpenMVS_Windows_x64/images/20130916T153709.640Z.jpg'
+10:12:59 [App     ] error: failed reloading image 'C:/Users/Administrateur/Downloads/OpenMVS_Windows_x64/images/20130916T154442.920Z.jpg'
+10:12:59 [App     ] error: failed reloading image 'C:/Users/Administrateur/Downloads/OpenMVS_Windows_x64/images/20130916T153812.640Z.jpg'
+10:12:59 [App     ] error: failed reloading image 'C:/Users/Administrateur/Downloads/OpenMVS_Windows_x64/images/20130916T154303.920Z.jpg'
+10:12:59 [App     ] error: preparing images for dense reconstruction failed (errors loading images)

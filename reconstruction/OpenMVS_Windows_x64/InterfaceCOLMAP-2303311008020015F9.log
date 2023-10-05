@@ -1,0 +1,9 @@
+10:08:02 [App     ] Build date: Nov 28 2022, 13:08:56
+10:08:02 [App     ] CPU: Intel(R) Core(TM) i9-10900K CPU @ 3.70GHz (20 cores)
+10:08:02 [App     ] RAM: 127.74GB Physical Memory 128.00TB Virtual Memory
+10:08:02 [App     ] OS: Windows 8 x64
+10:08:02 [App     ] Disk: 106.62GB (951.14GB) space
+10:08:02 [App     ] SSE & AVX compatible CPU & OS detected
+10:08:02 [App     ] Command line: InterfaceCOLMAP -i C:\Users\Administrateur\Desktop\test_pl3_b1\sparse\0_geo -o C:\Users\Administrateur\Desktop\test_pl3_b1\models\model.mvs --image-folder C:\Users\Administrateur\Desktop\test_pl3_b1\models\images
+10:08:02 [App     ] error: unable to open file 'C:/Users/Administrateur/Desktop/test_pl3_b1/sparse/0_geo/sparse/cameras.txt'
+10:08:02 [App     ] error: unable to open file 'C:/Users/Administrateur/Desktop/test_pl3_b1/sparse/0_geo/sparse/cameras.bin'
