@@ -12,7 +12,39 @@ from PyQt5.QtWidgets import (QDialog, QFileDialog)
 from video_annotations import report_type
 
 
+"""
+Configuration module for Chubacapp.
+
+This module provides functions and classes for configuring the Chubacapp application. It includes functions for 
+retrieving vocabulary tree files, adding images, videos, 3D models, and navigation data to the project configuration, 
+updating the user interface, and launching dialogs for adding navigation, images, videos, 3D models, and annotations.
+
+Functions:
+    get_vocab_tree: Get the vocabulary tree files from the specified directory.
+    add_images: Add images to the project configuration.
+    add_videos: Add videos to the project configuration.
+    add_3d_model: Add a 3D model to the project configuration.
+    set_camera_model: Set the camera model in the project configuration.
+    add_navigation: Add navigation data to the project configuration.
+    update_interface: Update the user interface with the project configuration.
+    AddNavigation: Dialog for adding navigation data.
+    AddImage: Dialog for adding images.
+    AddVideo: Dialog for adding videos.
+    Add3Dmodel: Dialog for adding 3D models.
+    AddAnnotations: Dialog for adding annotations.
+"""
+
+
 def get_vocab_tree():
+    """
+Get the vocabulary tree files from the specified directory.
+
+This function retrieves the vocabulary tree files from the specified directory. It creates a dictionary where the keys are the file names and the values are the file paths. Only files with the ".bin" extension are included in the dictionary.
+
+Returns:
+    dict: A dictionary of vocabulary tree files, where the keys are the file names and the values are the file paths.
+"""
+
     vocab_dir = r"configurations/vocab_trees"
     file_list = os.listdir(vocab_dir)
     tree_dict = {}

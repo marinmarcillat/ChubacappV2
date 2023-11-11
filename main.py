@@ -28,6 +28,21 @@ sys.path.append(reproj_dir)
 import reconstruction.rc_dialog as rc
 import reprojection.rp_dialog as rp
 
+"""
+Main module for the Chubacapp application.
+
+This module contains the main window class `Window` which serves as the main interface for the Chubacapp application. 
+It handles the setup of the user interface, connects actions to their respective functions, and launches various dialogs
+ for reconstruction, camera management, navigation, image and video addition, 3D model addition, and annotation addition
+
+Classes:
+    Window: Main window class for the Chubacapp application.
+
+Functions:
+    EmittingStream.write: Write text to the QTextEdit.
+    EmittingStream.flush: Flush the stream.
+"""
+
 
 class EmittingStream(QtCore.QObject):
     textWritten = QtCore.pyqtSignal(str)

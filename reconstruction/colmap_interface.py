@@ -10,12 +10,58 @@ import ext_programs as ep
 
 
 class ReconstructionThread(QtCore.QThread):
+    """
+ReconstructionThread class for the colmap_interface module.
+
+This class represents a thread for performing the reconstruction process.
+It handles feature extraction, matching, mapping, post-sparse reconstruction, meshing, and model export.
+The thread emits signals to update the GUI with progress and status information.
+
+Args:
+    gui: The GUI object.
+    image_path (str): The path to the images.
+    project_path (str): The path to the project.
+    camera (str): The path to the camera file.
+    vocab_tree_path (str): The path to the vocabulary tree.
+    nav_data (pandas.DataFrame): The navigation data.
+    options (tuple): Various reconstruction options.
+
+Attributes:
+    step (QtCore.pyqtSignal): Signal emitted to indicate the current step in the reconstruction process.
+    prog_val (QtCore.pyqtSignal): Signal emitted to indicate the progress value.
+    nb_models (QtCore.pyqtSignal): Signal emitted to indicate the number of models processed.
+    finished (QtCore.pyqtSignal): Signal emitted when the reconstruction process is finished.
+"""
+
+    def __init__(self, gui, image_path, project_path, camera, vocab_tree_path, nav_data, options):
+        ...
+
     step = QtCore.pyqtSignal(str)
     prog_val = QtCore.pyqtSignal(int)
     nb_models = QtCore.pyqtSignal(str)
     finished = QtCore.pyqtSignal()
 
     def __init__(self, gui, image_path, project_path, camera, vocab_tree_path, nav_data, options):
+        """
+Initialize a ReconstructionThread object.
+
+This constructor initializes a ReconstructionThread object with the provided parameters.
+It sets up the necessary paths, creates directories if they don't exist, and initializes the options for the
+ reconstruction process.
+
+Args:
+    gui: The GUI object.
+    image_path (str): The path to the images.
+    project_path (str): The path to the project.
+    camera (str): The path to the camera file.
+    vocab_tree_path (str): The path to the vocabulary tree.
+    nav_data (pandas.DataFrame): The navigation data.
+    options (tuple): Various reconstruction options.
+
+Returns:
+    None
+"""
+
         super(ReconstructionThread, self).__init__()
         self.running = True
 
@@ -39,10 +85,23 @@ class ReconstructionThread(QtCore.QThread):
                 os.mkdir(path)
         self.nav_data = nav_data
 
-
         self.CPU_features, self.vocab_tree, self.seq, self.spatial, self.refine, self.matching_neighbors, self.two_view, self.img_scaling, self.decimation, self.skip_reconstruction = options
 
     def run(self):
+        """
+Run the reconstruction process.
+
+This function executes the reconstruction process, which includes calling the reconstruction, post-sparse
+reconstruction, meshing, and model export methods. If a RuntimeError occurs, an error message is displayed.
+The progress value is set to 0, and the 'finished' signal is emitted.
+
+Args:
+    self: An instance of the colmap_interface class.
+
+Returns:
+    None
+"""
+
         try:
             if not self.skip_reconstruction:
                 self.reconstruction()
@@ -64,6 +123,19 @@ class ReconstructionThread(QtCore.QThread):
         raise RuntimeError("An error occurred !")
 
     def get_exec(self):
+        """
+Get the paths for the required executables.
+
+This function sets the paths for the COLMAP, OpenMVS, and texrecon executables. It checks if the executables exist and
+raises an error if any of them is missing.
+
+Args:
+    self: An instance of the colmap_interface class.
+
+Returns:
+    None
+"""
+
         self.colmap = os.path.join(os.path.dirname(os.path.abspath(__file__)), r"COLMAP-3.8-GPS_prior\COLMAP.bat")
         self.openMVS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "OpenMVS_Windows_x64")
         self.texrecon = os.path.join(os.path.dirname(os.path.abspath(__file__)), r"texrecon\texrecon.exe")
@@ -74,6 +146,24 @@ class ReconstructionThread(QtCore.QThread):
                 self.end()
 
     def run_cmd(self, prog, args):
+        """
+Run a command and wait for it to finish.
+
+This function runs a command with the specified arguments and waits for it to finish. If an error occurs, it calls the
+'end' method to handle the error. Otherwise, it returns 1.
+
+Args:
+    self: An instance of the colmap_interface class.
+    prog (str): The path to the program to be executed.
+    args (str): The arguments to be passed to the program.
+
+Returns:
+    int: 1 if the command was executed successfully.
+
+Raises:
+    RuntimeError: If an error occurs during command execution.
+"""
+
         p = ep.command(prog, args, self.gui)
         p.p.waitForFinished(-1)
         if p.error:
@@ -82,6 +172,21 @@ class ReconstructionThread(QtCore.QThread):
             return 1
 
     def config_extract_features(self, cpu_features):
+        """
+Configure feature extraction for the colmap_interface module.
+
+This function generates a configuration file for feature extraction.
+It reads the camera path, adds necessary sections and options to the configuration,
+and writes the configuration file. The path to the generated configuration file is returned.
+
+Args:
+    self: An instance of the colmap_interface class.
+    cpu_features (bool): Flag indicating whether to use CPU features.
+
+Returns:
+    str: The path to the generated configuration file.
+"""
+
         print("Extracting features")
         config_path = os.path.join(self.project_path, 'extract_features.ini')
 
@@ -107,6 +212,21 @@ class ReconstructionThread(QtCore.QThread):
         return config_path
 
     def reconstruction(self):
+        """
+Reconstruction function for the colmap_interface module.
+
+This function performs the reconstruction process, including feature extraction, matching, and mapping.
+It extracts features from the images, adds GPS information to the database,
+matches features using various methods (vocab tree, sequential, spatial, and transitive), and performs mapping
+using hierarchical mapper with GPS priors.
+
+Args:
+    self: An instance of the colmap_interface class.
+
+Returns:
+    None
+"""
+
         self.step.emit('extraction')
         config_path = self.config_extract_features(self.CPU_features)
         self.run_cmd(self.colmap, ep.extract_features_command(config_path))
@@ -124,9 +244,25 @@ class ReconstructionThread(QtCore.QThread):
         self.run_cmd(self.colmap, ep.match_features_transitive_command(self.db_path))
 
         self.step.emit('mapping')
-        self.run_cmd(self.colmap, ep.hierarchical_mapper_gps_prior_command(self.sparse_model_path, self.db_path, self.image_path, self.two_view))
+        self.run_cmd(self.colmap,
+                     ep.hierarchical_mapper_gps_prior_command(self.sparse_model_path, self.db_path, self.image_path,
+                                                              self.two_view))
 
     def post_sparse_reconstruction(self):
+        """
+Post-sparse reconstruction function for the colmap_interface module.
+
+This function performs post-processing steps after the sparse reconstruction. It iterates through each model in the
+ sparse model path, creates a corresponding dense model path if it doesn't exist, performs georegistration, converts
+ the model, undistorts images, and interfaces with OpenMVS for further processing.
+
+Args:
+    self: An instance of the colmap_interface class.
+
+Returns:
+    None
+"""
+
         list_models = next(os.walk(self.sparse_model_path))[1]
         prog = 0
         tot_len = len(list_models)
@@ -143,7 +279,7 @@ class ReconstructionThread(QtCore.QThread):
             self.gui.normalOutputWritten(s)
 
             self.step.emit('georegistration')
-            #self.run_cmd(self.colmap, ep.model_aligner_command(sparse_model_path, self.db_path))
+            # self.run_cmd(self.colmap, ep.model_aligner_command(sparse_model_path, self.db_path))
             self.run_cmd(self.colmap, ep.convert_model_command(sparse_model_path))
             self.get_georegistration_file(sparse_model_path)
             self.run_cmd(self.colmap, ep.georegistration_command(sparse_model_path))
@@ -153,6 +289,20 @@ class ReconstructionThread(QtCore.QThread):
                          ep.interface_openmvs_command(dense_model_path))
 
     def meshing(self):
+        """
+Meshing function for the colmap_interface module.
+
+This function performs the meshing process for each model in the specified model path. It iterates through each model,
+performs dense reconstruction, mesh reconstruction, optional refinement, texture conversion, and texturing.
+The progress of the meshing process is displayed in the GUI.
+
+Args:
+    self: An instance of the colmap_interface class.
+
+Returns:
+    None
+"""
+
         list_models = next(os.walk(self.models_path))[1]
         prog = 0
         tot_len = len(list_models)
@@ -167,7 +317,8 @@ class ReconstructionThread(QtCore.QThread):
 
             self.step.emit('dense')
             self.run_cmd(os.path.join(self.openMVS, 'DensifyPointCloud.exe'),
-                         ep.dense_reconstruction_command(dense_model_path, self.openMVS, self.two_view, self.img_scaling))
+                         ep.dense_reconstruction_command(dense_model_path, self.openMVS, self.two_view,
+                                                         self.img_scaling))
 
             self.step.emit('mesh')
             self.run_cmd(os.path.join(self.openMVS, 'ReconstructMesh.exe'),
@@ -182,7 +333,7 @@ class ReconstructionThread(QtCore.QThread):
                                                                  os.path.join(dense_model_path, "images"))
             self.run_cmd(self.texrecon, ep.texrecon_texturing_command(dense_model_path))
 
-            #self.run_cmd(os.path.join(self.openMVS, 'TextureMesh.exe'), ep.openmvs_texturing_command(dense_model_path))
+            # self.run_cmd(os.path.join(self.openMVS, 'TextureMesh.exe'), ep.openmvs_texturing_command(dense_model_path))
 
     def get_georegistration_file(self, model_path):
         filename = os.path.join(model_path, 'images.txt')
@@ -202,6 +353,21 @@ class ReconstructionThread(QtCore.QThread):
             f.write(str(ref_position))
 
     def export_models(self, obj=True):
+        """
+Export models for the colmap_interface module.
+
+This function exports the models generated during the reconstruction process. It copies the necessary files to the
+export path, creates an SFM data file, writes a KML file, and updates the project configuration with the exported model
+information.
+
+Args:
+    self: An instance of the colmap_interface class.
+    obj (bool, optional): Flag indicating whether to export the model as an OBJ file. Defaults to True.
+
+Returns:
+    None
+"""
+
         list_models = next(os.walk(self.models_path))[1]
         for model_id, model in enumerate(list_models):
             files2copy = [os.path.join(self.sparse_model_path, model, "reference_position.txt")]
