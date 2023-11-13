@@ -55,6 +55,35 @@ class EmittingStream(QtCore.QObject):
 
 
 class Window(QMainWindow, Ui_MainWindow):
+    """
+    A class representing the main window of the application.
+
+    Args:
+        parent: The parent widget (default: None).
+
+    Attributes:
+        progress_bar: A QProgressBar widget.
+        available_cameras: A dictionary of available cameras.
+        available_trees: A vocabulary tree.
+        plotter: The plotter widget.
+        project_config: The project template.
+        nav_data: A DataFrame for navigation data.
+
+    Methods:
+        __init__(self, parent=None): Initializes the main window.
+        connect_actions(self): Connects the actions to their respective slots.
+        normalOutputWritten(self, text): Appends text to the QTextEdit.
+        launch_reconstruction(self): Launches the reconstruction dialog.
+        launch_reprojection(self): Launches the reprojection dialog.
+        launch_navigation(self): Launches the navigation dialog.
+        launch_add_img(self): Launches the add image dialog.
+        launch_add_video(self): Launches the add video dialog.
+        launch_add_3dmodel(self): Launches the add 3D model dialog.
+        launch_add_annotations(self): Launches the add annotations dialog.
+        launch_camera_manager(self): Launches the camera manager dialog.
+        pop_message(self, title, message): Displays a message dialog.
+    """
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)

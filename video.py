@@ -5,6 +5,15 @@ from datetime import datetime, timedelta
 import pandas as pd
 
 def get_video_list(video_dir):
+    """
+    Retrieves a list of videos from the specified directory.
+
+    Args:
+        video_dir: The directory containing the videos.
+
+    Returns:
+        pandas.DataFrame: A DataFrame containing the video information.
+    """
     video_list = {}
     for file in sorted(os.listdir(video_dir)):
         video_path = os.path.join(video_dir, file)
@@ -16,6 +25,25 @@ def get_video_list(video_dir):
     return pd.DataFrame.from_dict(video_list, orient='index')
 
 class ExtractImageThread(QtCore.QThread):
+    """
+    A thread for extracting images from videos and generating navigation data.
+
+    Args:
+        video_df: The DataFrame containing video information.
+        dir_out: The output directory for extracted images.
+        sampling_time: The sampling time for extracting images.
+        video_nav_path: The path to the video navigation file.
+
+    Attributes:
+        finished: A PyQt signal emitted when the thread finishes.
+        nav_path: A PyQt signal emitted with the path to the extracted navigation file.
+
+    Methods:
+        run(self): Runs the thread.
+        extract_images(self, video_path, dir_out, start_time, sampling_time): Extracts images from a video.
+        generate_navigation(self, video_navigation_path): Generates navigation data based on video navigation file.
+    """
+
     finished = QtCore.pyqtSignal()
     nav_path = QtCore.pyqtSignal(str)
 

@@ -8,6 +8,15 @@ from openmvg_json_file_handler import OpenMVGJSONFileHandler
 
 
 def add_3d_cameras(qt):
+    """
+    Adds 3D cameras to the plotter based on the project configuration.
+
+    Args:
+        qt: The main window object.
+
+    Returns:
+        None.
+    """
     plotter, project_config = qt.plotter, qt.project_config
     for model in project_config['outputs']['3D_models']:
         sfm_path = model['sfm']
@@ -23,11 +32,30 @@ def add_3d_cameras(qt):
 
 
 def add_mesh(plotter, obj_path):
+    """
+    Adds a mesh to the plotter.
+
+    Args:
+        plotter: The pyvista.Plotter object.
+        obj_path: The path to the OBJ file.
+
+    Returns:
+        None.
+    """
     mesh = pv.read(obj_path)
     plotter.add_mesh(mesh)
 
 
 def add_3d_models(qt):
+    """
+    Adds 3D models to the plotter based on the project configuration.
+
+    Args:
+        qt: The main window object.
+
+    Returns:
+        None.
+    """
     plotter, project_config = qt.plotter, qt.project_config
     for model in project_config['outputs']['3D_models']:
         model_path = model['model_path']
@@ -37,6 +65,15 @@ def add_3d_models(qt):
     #plotter.reset_camera()
 
 def add_nav_camera(qt):
+    """
+    Adds navigation cameras to the plotter based on the project configuration and navigation data.
+
+    Args:
+        qt: The main window object.
+
+    Returns:
+        None.
+    """
     plotter, project_config, nav_data = qt.plotter, qt.project_config, qt.nav_data
     if qt.NavLayer.isChecked() and project_config['inputs']['navigation']:
         points = coord_conversions.position2d_2_local(nav_data, project_config['model_origin'])
@@ -48,6 +85,16 @@ def add_nav_camera(qt):
 
 
 def plot_obj_with_multiple_textures(plotter, obj_path):
+    """
+    Plots an OBJ file with multiple textures.
+
+    Args:
+        plotter: The pyvista.Plotter object.
+        obj_path: The path to the OBJ file.
+
+    Returns:
+        None.
+    """
     obj_mesh = pv.read(obj_path)
     texture_dir = os.path.dirname(obj_path)
 

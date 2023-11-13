@@ -7,6 +7,15 @@ import os, imghdr
 import ast
 
 def report_type(file_path):
+    """
+    Determines the type of report based on the file path.
+
+    Args:
+        file_path: The path to the file.
+
+    Returns:
+        str: The report type ("img" for image or "video" for video).
+    """
     annotations = pd.read_csv(file_path, sep=",")
     col = annotations.columns[0]
     report_type = None
@@ -17,6 +26,15 @@ def report_type(file_path):
     return report_type
 
 def get_video_list(video_dir):
+    """
+    Retrieves a list of videos from the specified directory.
+
+    Args:
+        video_dir: The directory containing the videos.
+
+    Returns:
+        pandas.DataFrame: A DataFrame containing the video information.
+    """
     video_list = {}
     for file in sorted(os.listdir(video_dir)):
         video_path = os.path.join(video_dir, file)
@@ -29,6 +47,15 @@ def get_video_list(video_dir):
 
 
 def get_img_list(img_path):
+    """
+    Retrieves a list of images from the specified directory.
+
+    Args:
+        img_path: The directory containing the images.
+
+    Returns:
+        list: A list of image names.
+    """
     img_list = []
     for file in sorted(os.listdir(img_path)):
         jpg_path = os.path.join(img_path, file)
@@ -38,6 +65,17 @@ def get_img_list(img_path):
 
 
 def get_annotations_tracks(annotation_path, reproj_cameras, video_dir):
+    """
+    Retrieves the annotation tracks based on the annotation file, reprojected cameras, and video directory.
+
+    Args:
+        annotation_path: The path to the annotation file.
+        reproj_cameras: The reprojected cameras.
+        video_dir: The directory containing the videos.
+
+    Returns:
+        pandas.DataFrame: A DataFrame containing the annotation tracks.
+    """
     annotations = pd.read_csv(annotation_path, sep=",", )
 
     video_df = get_video_list(video_dir)
@@ -68,6 +106,16 @@ def get_annotations_tracks(annotation_path, reproj_cameras, video_dir):
     return ann_tracks
 
 def frame_to_time(frame_list, start_time):
+    """
+    Converts a list of frame numbers to corresponding timestamps.
+
+    Args:
+        frame_list: The list of frame numbers.
+        start_time: The start time of the video.
+
+    Returns:
+        list: A list of timestamps.
+    """
     result = []
     for i in frame_list:
         td = datetime.timedelta(seconds=i)
@@ -76,10 +124,18 @@ def frame_to_time(frame_list, start_time):
 
 
 def import_video_annotations(ann_path, start_time):
+    """
+    Imports video annotations from a CSV file.
+
+    Args:
+        ann_path: The path to the annotation file.
+        start_time: The start time of the video.
+
+    Returns:
+        pandas.DataFrame: A DataFrame containing the imported video annotations.
+    """
     data = pd.read_csv(ann_path)
     data['frames'] = data.frames.apply(lambda x: ast.literal_eval(str(x)))
     data['points'] = data.points.apply(lambda x: ast.literal_eval(str(x)))
     data['frames_time'] = data.frames.apply(lambda x: frame_to_time(x, start_time))
     return data
-
-#data_filt = data[len(data['frames']) > 1 and data['shape_name'] == "WholeFrame"]
