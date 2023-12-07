@@ -104,6 +104,11 @@ class Window(QMainWindow, Ui_MainWindow):
 
         self.plotter = self.contentWidget
         self.plotter.add_axes()
+        self.plotter_actors = {
+            'navigation': [],
+            'recon_camera': [],
+            '3D_models': [],
+        }
 
         self.project_config = project.project_template.copy()
         self.nav_data = pd.DataFrame()
@@ -142,6 +147,7 @@ class Window(QMainWindow, Ui_MainWindow):
             print("Reconstruction success!")
         else:
             print("Cancel!")
+        project.save_project(self)
 
     def launch_reprojection(self):
         dlg = rp.rpDialog(self)
@@ -149,6 +155,7 @@ class Window(QMainWindow, Ui_MainWindow):
             print("Reconstruction success!")
         else:
             print("Cancel!")
+        project.save_project(self)
 
     def launch_navigation(self):
         dlg = configuration.AddNavigation(self)
@@ -156,6 +163,7 @@ class Window(QMainWindow, Ui_MainWindow):
             print(self.nav_data)
         else:
             print("Cancel!")
+        project.save_project(self)
 
     def launch_add_img(self):
         dlg = configuration.AddImage(self)
@@ -163,6 +171,7 @@ class Window(QMainWindow, Ui_MainWindow):
             print("ok")
         else:
             print("Cancel!")
+        project.save_project(self)
 
     def launch_add_video(self):
         dlg = configuration.AddVideo(self)
@@ -170,6 +179,7 @@ class Window(QMainWindow, Ui_MainWindow):
             print("ok")
         else:
             print("Cancel!")
+        project.save_project(self)
 
     def launch_add_3dmodel(self):
         dlg = configuration.Add3Dmodel(self)
@@ -177,6 +187,7 @@ class Window(QMainWindow, Ui_MainWindow):
             print("ok")
         else:
             print("Cancel!")
+        project.save_project(self)
 
     def launch_add_annotations(self):
         dlg = configuration.AddAnnotations(self)
@@ -184,6 +195,7 @@ class Window(QMainWindow, Ui_MainWindow):
             print("ok")
         else:
             print("Cancel!")
+        project.save_project(self)
 
     def launch_camera_manager(self):
         dlg = cm.CameraManager(self, self.available_cameras)
@@ -191,6 +203,7 @@ class Window(QMainWindow, Ui_MainWindow):
             print("Success!")
         else:
             print("Cancel!")
+        project.save_project(self)
 
     def pop_message(self, title, message):
         dlg = QMessageBox.warning(self, title, message)

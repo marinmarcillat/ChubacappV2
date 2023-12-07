@@ -60,13 +60,13 @@ class rpDialog(QDialog, Ui_Dialog_reproj):
 
     def end_get_hit_maps(self):
         self.set_prog(0)
+        self.project_config['outputs']['hit_maps'] = os.path.join(self.project_config['project_directory'], 'hit_maps')
         self.qt.normalOutputWritten("Hit maps generation ended \r")
         if len(self.project_config['inputs']['annotations']) != 0:
             self.enable_reproject()
 
     def launch_reprojection(self):
-        project_path = self.project_config['project_directory']
-        hit_maps_path = os.path.join(project_path, 'hit_maps')
+        hit_maps_path = self.project_config['outputs']['hit_maps']
 
         rep_name = self.annotation_cb.currentText()
         report = None

@@ -9,6 +9,7 @@ import convert_colmap_poses_to_texrecon_dev
 import ext_programs as ep
 
 
+
 class ReconstructionThread(QtCore.QThread):
     """
 ReconstructionThread class for the colmap_interface module.
@@ -411,3 +412,4 @@ Returns:
             model_dict = {"name": f"mesh_{model_id}", "model_path": os.path.join(model_export_path, "mesh.ply"),
                           "sfm": os.path.join(model_export_path, "sfm_data_temp.json")}
             self.gui.project_config['outputs']['3D_models'].append(model_dict)
+

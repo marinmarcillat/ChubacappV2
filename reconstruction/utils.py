@@ -8,6 +8,7 @@ import numpy as np
 import collections
 from time import sleep
 import copy
+import math
 
 
 def run_cmd(cmd, wait=True):
@@ -69,29 +70,49 @@ def merge_models(dir1, dir2, dir_output):
 
 
 BaseImage = collections.namedtuple(
-    "Image", ["id", "rotmat", "tvec", "camera_id", "name"])
+    "Image", ["id", "rotmat", "center", "camera_id", "name"])
 
 Camera = collections.namedtuple(
     "Camera", ["id", "model", "width", "height", "params"])
 
 
 class Image(BaseImage):
-    def qvec2rotmat(self):
-        return qvec2rotmat(self.qvec)
+    def print(self):
+        print("name")
 
+def quaternion_to_rotation_matrix(q):
+    """Convert a quaternion to a rotation matrix."""
 
-def qvec2rotmat(qvec):
-    return np.array([
-        [1 - 2 * qvec[2] ** 2 - 2 * qvec[3] ** 2,
-         2 * qvec[1] * qvec[2] - 2 * qvec[0] * qvec[3],
-         2 * qvec[3] * qvec[1] + 2 * qvec[0] * qvec[2]],
-        [2 * qvec[1] * qvec[2] + 2 * qvec[0] * qvec[3],
-         1 - 2 * qvec[1] ** 2 - 2 * qvec[3] ** 2,
-         2 * qvec[2] * qvec[3] - 2 * qvec[0] * qvec[1]],
-        [2 * qvec[3] * qvec[1] - 2 * qvec[0] * qvec[2],
-         2 * qvec[2] * qvec[3] + 2 * qvec[0] * qvec[1],
-         1 - 2 * qvec[1] ** 2 - 2 * qvec[2] ** 2]])
+    # Original C++ method ('SetQuaternionRotation()') is defined in
+    # pba/src/pba/DataInterface.h.
+    # Parallel bundle adjustment (pba) code (used by visualsfm) is provided
+    # here: http://grail.cs.washington.edu/projects/mcba/
+    qq = math.sqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3])
+    if qq > 0:  # Normalize the quaternion
+        qw = q[0] / qq
+        qx = q[1] / qq
+        qy = q[2] / qq
+        qz = q[3] / qq
+    else:
+        qw = 1
+        qx = qy = qz = 0
+    m = np.zeros((3, 3), dtype=float)
+    m[0][0] = float(qw * qw + qx * qx - qz * qz - qy * qy)
+    m[0][1] = float(2 * qx * qy - 2 * qz * qw)
+    m[0][2] = float(2 * qy * qw + 2 * qz * qx)
+    m[1][0] = float(2 * qx * qy + 2 * qw * qz)
+    m[1][1] = float(qy * qy + qw * qw - qz * qz - qx * qx)
+    m[1][2] = float(2 * qz * qy - 2 * qx * qw)
+    m[2][0] = float(2 * qx * qz - 2 * qy * qw)
+    m[2][1] = float(2 * qy * qz + 2 * qw * qx)
+    m[2][2] = float(qz * qz + qw * qw - qy * qy - qx * qx)
+    return m
 
+def get_camera_translation_vector_after_rotation(translation_vector, rotation_mat):
+    """Set the camera translation after setting the camera rotation."""
+    return -np.dot(
+        rotation_mat.transpose(), translation_vector
+    )
 
 def read_cameras_text(path):
     """
@@ -139,11 +160,12 @@ def read_images_text(path, offset):
                 qvec = np.array(tuple(map(float, elems[1:5])))
                 tvec = np.array(tuple(map(float, elems[5:8]))) - np.array(offset)
                 tvec = tvec.tolist()
-                rotmat = qvec2rotmat(qvec).tolist()
+                rotation_mat = quaternion_to_rotation_matrix(qvec)
+                center = get_camera_translation_vector_after_rotation(tvec, rotation_mat)
                 image_name = elems[9]
                 elems = fid.readline().split()
                 images[image_id] = Image(
-                    id=image_id, rotmat=rotmat, tvec=tvec,
+                    id=image_id, rotmat=rotation_mat.tolist(), center=center.tolist(),
                     camera_id=camera_id, name=image_name)
     return images
 
@@ -202,7 +224,7 @@ def listposes2sfm(list_poses, cameras):
     list_views = []
     for pose in list_poses.items():
         _, image = pose
-        id, rot, translation, filename = image.id, image.rotmat, image.tvec, image.name
+        id, rot, center, filename = image.id, image.rotmat, image.center, image.name
         view = copy.deepcopy(views_template)
         view['key'] = view["value"]["polymorphic_id"] = view["value"]["ptr_wrapper"]["id"] = \
             view["value"]["ptr_wrapper"]["data"]["id_view"] = view["value"]["ptr_wrapper"]["data"]["id_pose"] = id
@@ -214,7 +236,7 @@ def listposes2sfm(list_poses, cameras):
         ext = copy.deepcopy(extrinsics_template)
         ext["key"] = id
         ext["value"]["rotation"] = rot
-        ext["value"]["center"] = translation
+        ext["value"]["center"] = center
         list_extrinsics.append(ext)
 
     return {

@@ -73,7 +73,7 @@ class annotationTo3D():
             annotations = annotations.rename(columns={"image_name": "filename"})
         else:
             annotations = pd.read_csv(self.annotation_path, sep=",")
-            annotations['points'] = annotations.apply(lambda x: ast.literal_eval(x["points"]))
+            annotations['points'] = annotations['points'].apply(lambda x: ast.literal_eval(x))
 
 
         point = []

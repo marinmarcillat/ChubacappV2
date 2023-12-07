@@ -638,8 +638,6 @@ def get_cam_parameters(camera):
     rotation_mat = camera.get_rotation_as_rotation_mat()
     rotation_mat = invert_y_and_z_axis(rotation_mat)
     translation_vec = invert_y_and_z_axis(translation_vec)
-
-
     trsf_matrix = _get_world_matrix_from_translation_vec(translation_vec, rotation_mat)
 
     return trsf_matrix, fov, shift, focal_length, res, dist

@@ -9,7 +9,7 @@ from openmvg_json_file_handler import OpenMVGJSONFileHandler
 
 def add_3d_cameras(qt):
     """
-    Adds 3D cameras to the plotter based on the project configuration.
+    Adds reconstructed 3D cameras to the plotter based on the project configuration.
 
     Args:
         qt: The main window object.
@@ -18,17 +18,33 @@ def add_3d_cameras(qt):
         None.
     """
     plotter, project_config = qt.plotter, qt.project_config
-    for model in project_config['outputs']['3D_models']:
-        sfm_path = model['sfm']
-        cams = OpenMVGJSONFileHandler.parse_openmvg_file(sfm_path,  "NAME", True)
-        for cam in cams:
-            trsf_matrix, fov, shift, focal_length, res, dist = camera.get_cam_parameters(cam)
+    if qt.CameraLayer.isChecked():
+        models = project_config['outputs']['3D_models']
+        if len(models) == 0:
+            print("Missing camera to plot !")
+        else:
+            for model in models:
+                sfm_path = model['sfm']
+                cams = OpenMVGJSONFileHandler.parse_openmvg_file(sfm_path,  "NAME", True)
+                points = []
+                for cam in cams:
+                    trsf_matrix, fov, shift, focal_length, res, dist = camera.get_cam_parameters(cam)
+                    # camera_model = pv.Camera()
+                    # camera_model.model_transform_matrix = trsf_matrix
+                    # camera_model.clipping_range = [0.1, 1]
+                    # frustum = camera_model.view_frustum(1.0)
+                    # actor = plotter.add_mesh(frustum, style="wireframe")
+                    points.append(trsf_matrix[:, -1][:-1].tolist())
 
-            camera_model = pv.Camera()
-            camera_model.model_transform_matrix = trsf_matrix
-            camera_model.clipping_range = [0.1, 1]
-            frustum = camera_model.view_frustum(1.0)
-            plotter.add_mesh(frustum, style="wireframe")
+                actor = plotter.add_points(
+                    np.array(points), render_points_as_spheres=True, point_size=10.0
+                )
+                qt.plotter_actors['recon_camera'].append(actor)
+
+    else:
+        for actor in qt.plotter_actors['recon_camera']:
+            _ = plotter.remove_actor(actor)
+
 
 
 def add_mesh(plotter, obj_path):
@@ -57,12 +73,21 @@ def add_3d_models(qt):
         None.
     """
     plotter, project_config = qt.plotter, qt.project_config
-    for model in project_config['outputs']['3D_models']:
-        model_path = model['model_path']
-        mesh = pv.read(model_path)
-        mesh = mesh.rotate_x(180)
-        plotter.add_mesh(mesh)
-    #plotter.reset_camera()
+    if qt.ModelLayer.isChecked():
+        models = project_config['outputs']['3D_models']
+        if len(models) == 0:
+            print("Missing 3D model !")
+        else:
+            for model in models:
+                model_path = model['model_path']
+                mesh = pv.read(model_path)
+                #mesh = mesh.rotate_x(180)
+                actor = plotter.add_mesh(mesh)
+                qt.plotter_actors['3D_models'].append(actor)
+    else:
+        for actor in qt.plotter_actors['3D_models']:
+            _ = plotter.remove_actor(actor)
+
 
 def add_nav_camera(qt):
     """
@@ -75,13 +100,19 @@ def add_nav_camera(qt):
         None.
     """
     plotter, project_config, nav_data = qt.plotter, qt.project_config, qt.nav_data
-    if qt.NavLayer.isChecked() and project_config['inputs']['navigation']:
-        points = coord_conversions.position2d_2_local(nav_data, project_config['model_origin'])
+    if qt.NavLayer.isChecked():
+        if project_config['inputs']['navigation']:
+            points = coord_conversions.position2d_2_local(nav_data, project_config['model_origin'])
 
-        plotter.add_points(
-            points.to_numpy(), render_points_as_spheres=True, point_size=10.0, scalars=nav_data[['depth']]
-        )
-        #plotter.reset_camera()
+            actor = plotter.add_points(
+                points.to_numpy(), render_points_as_spheres=True, point_size=10.0, scalars=nav_data[['depth']]
+            )
+            qt.plotter_actors['navigation'].append(actor)
+        else:
+            print("Missing navigation data !")
+    else:
+        for actor in qt.plotter_actors['navigation']:
+            _ = plotter.remove_actor(actor)
 
 
 def plot_obj_with_multiple_textures(plotter, obj_path):
