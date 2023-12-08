@@ -46,6 +46,7 @@ class annotationTo3D():
     def annotation2hitpoint(self, ann_coords, hit_map):
         (x, y) = ann_coords
         if self.min_x < x < self.max_x and self.min_y < y < self.max_y:
+            y = self.max_y - y  # Inverse Y axis
             coord = hit_map[int(x)][int(y)]
             if np.array_equal(coord, [0, 0, 0]):
                 return None

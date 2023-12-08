@@ -426,21 +426,21 @@
                 </widget>
                </item>
                <item>
-                <widget class="QCheckBox" name="OrthoLayer">
+                <widget class="QCheckBox" name="TexturedModelLayer">
                  <property name="font">
                   <font>
                    <pointsize>10</pointsize>
                   </font>
                  </property>
                  <property name="text">
-                  <string>Orthomosaic</string>
+                  <string>Textured 3D model</string>
                  </property>
                  <property name="icon">
                   <iconset resource="icons/resource.qrc">
                    <normaloff>:/icons/img_48.ico</normaloff>:/icons/img_48.ico</iconset>
                  </property>
                  <property name="checkable">
-                  <bool>false</bool>
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>

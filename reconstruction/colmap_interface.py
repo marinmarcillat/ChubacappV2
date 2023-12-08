@@ -410,6 +410,6 @@ Returns:
                 shutil.rmtree(fp)
 
             model_dict = {"name": f"mesh_{model_id}", "model_path": os.path.join(model_export_path, "mesh.ply"),
-                          "sfm": os.path.join(model_export_path, "sfm_data_temp.json")}
+                          "sfm": os.path.join(model_export_path, "sfm_data_temp.json"), "textured_model_path": os.path.join(model_export_path, "textured_mesh.obj")}
             self.gui.project_config['outputs']['3D_models'].append(model_dict)
 

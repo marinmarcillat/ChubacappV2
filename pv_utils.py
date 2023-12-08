@@ -1,4 +1,5 @@
 import pyvista as pv
+import trimesh
 import numpy as np
 import os
 import pandas as pd
@@ -44,6 +45,7 @@ def add_3d_cameras(qt):
     else:
         for actor in qt.plotter_actors['recon_camera']:
             _ = plotter.remove_actor(actor)
+        qt.plotter_actors['recon_camera'] = []
 
 
 
@@ -87,6 +89,7 @@ def add_3d_models(qt):
     else:
         for actor in qt.plotter_actors['3D_models']:
             _ = plotter.remove_actor(actor)
+        qt.plotter_actors['3D_models'] = []
 
 
 def add_nav_camera(qt):
@@ -113,53 +116,57 @@ def add_nav_camera(qt):
     else:
         for actor in qt.plotter_actors['navigation']:
             _ = plotter.remove_actor(actor)
+        qt.plotter_actors['navigation'] = []
 
 
-def plot_obj_with_multiple_textures(plotter, obj_path):
+def add_textured_models(qt):
     """
     Plots an OBJ file with multiple textures.
 
     Args:
-        plotter: The pyvista.Plotter object.
-        obj_path: The path to the OBJ file.
+        qt: The main window object.
 
     Returns:
         None.
     """
-    obj_mesh = pv.read(obj_path)
-    texture_dir = os.path.dirname(obj_path)
+    plotter, project_config = qt.plotter, qt.project_config
+    if qt.TexturedModelLayer.isChecked():
+        models = project_config['outputs']['3D_models']
+        if len(models) == 0:
+            print("Missing 3D model !")
+        else:
+            for model in models:
+                tex_model_path = model['textured_model_path']
+                sc_dir = os.path.dirname(tex_model_path)
+                pre = os.path.splitext(os.path.basename(tex_model_path))[0]
+                glb_path = os.path.join(sc_dir, f"{pre}.glb")
+                if not os.path.exists(glb_path):
+                    print("Converting to glb")
+                    mesh = trimesh.load(tex_model_path)
+                    mesh.export(file_obj=glb_path)
 
-    pre = os.path.splitext(os.path.basename(obj_path))[0]
+                prev_actors = list(plotter.actors.keys())
+                plotter.import_gltf(glb_path)
+                act_actors = list(plotter.actors.keys())
 
-    mtl_path = os.path.join(texture_dir, f"{pre}.mtl")
+                new_key = set(act_actors).difference(prev_actors)
+                actor = plotter.actors[list(new_key)[0]]
+                qt.plotter_actors['textured_models'].append(actor)
+    else:
+        #TODO: make it work !
+        for actor in qt.plotter_actors['textured_models']:
+            _ = plotter.remove_actor(actor)
 
-    texture_paths = []
-    mtl_names = []
 
-    # parse the mtl file
-    with open(mtl_path) as mtl_file:
-        for line in mtl_file:
-            parts = line.strip().split()
-            if len(parts) < 2:
-                continue
-            if parts[0] == 'map_Kd':
-                texture_paths.append(os.path.join(texture_dir, parts[1]))
-            elif parts[0] == 'newmtl':
-                mtl_names.append(parts[1])
 
-    material_ids = obj_mesh.cell_arrays['MaterialIds']
 
-    # This one do.
-    for i in np.unique(material_ids):
-        mesh_part = obj_mesh.extract_cells(material_ids == i)
-        mesh_part.textures[mtl_names[i]] = pv.read_texture(texture_paths[i])
-        plotter.add_mesh(mesh_part)
 
 def add_3d_annotations(qt):
     plotter, project_config = qt.plotter, qt.project_config
     if qt.AnnotationsLayer.isChecked():
         ann_path = project_config['outputs']['3D_annotation_path']
         if ann_path:
+            plotter.enable_anti_aliasing('ssaa')
             points_pd = pd.read_pickle(os.path.join(ann_path, "points.pkl"))
             filenames = points_pd['filename'].to_list()
             points = points_pd['points'].to_list()
