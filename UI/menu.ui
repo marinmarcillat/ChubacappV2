@@ -552,7 +552,7 @@
                    <normaloff>:/icons/reef_48.ico</normaloff>:/icons/reef_48.ico</iconset>
                  </property>
                  <property name="checkable">
-                  <bool>false</bool>
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
@@ -571,7 +571,7 @@
                    <normaloff>:/icons/img_48.ico</normaloff>:/icons/img_48.ico</iconset>
                  </property>
                  <property name="checkable">
-                  <bool>false</bool>
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>

@@ -108,6 +108,7 @@ class Window(QMainWindow, Ui_MainWindow):
             'navigation': [],
             'recon_camera': [],
             '3D_models': [],
+            '3D_annotations': [],
         }
 
         self.project_config = project.project_template.copy()
@@ -130,6 +131,7 @@ class Window(QMainWindow, Ui_MainWindow):
         self.NavLayer.stateChanged.connect(lambda: pv_utils.add_nav_camera(self))
         self.ModelLayer.stateChanged.connect(lambda: pv_utils.add_3d_models(self))
         self.CameraLayer.stateChanged.connect(lambda: pv_utils.add_3d_cameras(self))
+        self.AnnotationsLayer.stateChanged.connect(lambda: pv_utils.add_3d_annotations(self))
         self.camera_cb.currentTextChanged.connect(
             lambda: configuration.set_camera_model(self.project_config, self.camera_cb.currentText()))
 

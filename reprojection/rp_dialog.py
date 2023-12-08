@@ -81,7 +81,9 @@ class rpDialog(QDialog, Ui_Dialog_reproj):
                 video_dir = self.project_config['inputs']['video_path']
 
             self.annotation_reprojector = reproject.annotationTo3D(rep_path, hit_maps_path, video_dir)
-            self.annotation_reprojector.reproject_annotations()
+
+            output_dir = self.annotation_reprojector.reproject_annotations()
+            self.project_config['outputs']['3D_annotation_path'] = output_dir
 
 
-        print("ok")
+        print("Reprojection done !")

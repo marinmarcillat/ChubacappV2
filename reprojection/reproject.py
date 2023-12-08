@@ -11,6 +11,7 @@ from math import dist
 import pandas as pd
 from datetime import datetime
 from PyQt5 import QtCore
+import export_reprojection
 
 
 def get_reproj_cameras(hit_maps_dir):
@@ -46,7 +47,7 @@ class annotationTo3D():
         (x, y) = ann_coords
         if self.min_x < x < self.max_x and self.min_y < y < self.max_y:
             coord = hit_map[int(x)][int(y)]
-            if np.array_equal(coord, [0,0,0]):
+            if np.array_equal(coord, [0, 0, 0]):
                 return None
             return coord
         return None
@@ -69,12 +70,12 @@ class annotationTo3D():
     def reproject_annotations(self):
         if self.video_dir is not None:
             print("Retrieve video annotations tracks...")
-            annotations = video_annotations.get_annotations_tracks(self.annotation_path, self.reproj_cameras, self.video_dir)
+            annotations = video_annotations.get_annotations_tracks(self.annotation_path, self.reproj_cameras,
+                                                                   self.video_dir)
             annotations = annotations.rename(columns={"image_name": "filename"})
         else:
             annotations = pd.read_csv(self.annotation_path, sep=",")
             annotations['points'] = annotations['points'].apply(lambda x: ast.literal_eval(x))
-
 
         point = []
         polygon = []
@@ -85,8 +86,17 @@ class annotationTo3D():
             point.extend(result[0])
             line.extend(result[1])
             polygon.extend(result[2])
-        print(polygon)
-        print("Done")
+        point_pd = pd.DataFrame(point, columns=['points', 'label', 'label_hier', 'filename', 'ann_id', 'radius'])
+        line_pd = pd.DataFrame(line, columns=['points', 'label', 'label_hier', 'filename', 'ann_id'])
+        polygon_pd = pd.DataFrame(polygon, columns=['points', 'label', 'label_hier', 'filename', 'ann_id'])
+
+        annotation_output_dir = os.path.dirname(self.annotation_path)
+
+        point_pd.to_pickle(os.path.join(annotation_output_dir, 'points.pkl'))
+        line_pd.to_pickle(os.path.join(annotation_output_dir, 'lines.pkl'))
+        polygon_pd.to_pickle(os.path.join(annotation_output_dir, 'polygons.pkl'))
+
+        return annotation_output_dir
 
     def reproject(self, annotations, image, label):
         point = []
@@ -234,6 +244,3 @@ class reprojector(QtCore.QThread):
         a = np.zeros(np.append(res, 3), dtype=np.float16)
         a[pixel_ray[:, 0], pixel_ray[:, 1]] = points
         return a
-
-
-

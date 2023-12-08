@@ -1,7 +1,7 @@
 import pyvista as pv
 import numpy as np
 import os
-
+import pandas as pd
 import camera
 import coord_conversions
 from openmvg_json_file_handler import OpenMVGJSONFileHandler
@@ -154,3 +154,30 @@ def plot_obj_with_multiple_textures(plotter, obj_path):
         mesh_part = obj_mesh.extract_cells(material_ids == i)
         mesh_part.textures[mtl_names[i]] = pv.read_texture(texture_paths[i])
         plotter.add_mesh(mesh_part)
+
+def add_3d_annotations(qt):
+    plotter, project_config = qt.plotter, qt.project_config
+    if qt.AnnotationsLayer.isChecked():
+        ann_path = project_config['outputs']['3D_annotation_path']
+        if ann_path:
+            points_pd = pd.read_pickle(os.path.join(ann_path, "points.pkl"))
+            filenames = points_pd['filename'].to_list()
+            points = points_pd['points'].to_list()
+
+            actor = plotter.add_points(
+                np.array(points, dtype='float'), render_points_as_spheres=True, point_size=10.0, color = 'red',
+            )
+            qt.plotter_actors['3D_annotations'].append(actor)
+
+            polygons_pd = pd.read_pickle(os.path.join(ann_path, "polygons.pkl"))
+            polygons = polygons_pd[polygons_pd['filename'].isin(filenames)]['points'].to_list()
+            for polygon in polygons:
+                polygon.append(polygon[0])
+                actor = plotter.add_lines(np.array(polygon, dtype='float'), connected=True, color='purple', width=3)
+                qt.plotter_actors['3D_annotations'].append(actor)
+
+        else:
+            print("Missing reprojected_annotations data !")
+    else:
+        for actor in qt.plotter_actors['3D_annotations']:
+            _ = plotter.remove_actor(actor)
