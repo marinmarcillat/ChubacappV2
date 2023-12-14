@@ -30,8 +30,7 @@ project_template = {
         '3D_annotations': False,
         '3D_models': [],
         'orthomosaic_path': '',
-        'geomorpho_scales': [],
-        'geomorpho_path': '',
+        'geomorphometrics': [],
         '3D_annotation_path': '',
         'hit_maps': ''
     },

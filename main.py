@@ -27,6 +27,7 @@ sys.path.append(reproj_dir)
 
 import reconstruction.rc_dialog as rc
 import reprojection.rp_dialog as rp
+import geomorphometrics.geomorphometrics_dialog as geom
 
 """
 Main module for the Chubacapp application.
@@ -110,6 +111,7 @@ class Window(QMainWindow, Ui_MainWindow):
             '3D_models': [],
             '3D_annotations': [],
             'textured_models': [],
+            'geomorphometrics':[],
         }
 
         self.project_config = project.project_template.copy()
@@ -129,11 +131,13 @@ class Window(QMainWindow, Ui_MainWindow):
         self.AddAnnotation.triggered.connect(self.launch_add_annotations)
         self.Add3DModel.triggered.connect(self.launch_add_3dmodel)
         self.Reprojection.triggered.connect(self.launch_reprojection)
+        self.Geomorphomtrics.triggered.connect(self.launch_geomorphometrics)
         self.NavLayer.stateChanged.connect(lambda: pv_utils.add_nav_camera(self))
         self.ModelLayer.stateChanged.connect(lambda: pv_utils.add_3d_models(self))
         self.CameraLayer.stateChanged.connect(lambda: pv_utils.add_3d_cameras(self))
         self.AnnotationsLayer.stateChanged.connect(lambda: pv_utils.add_3d_annotations(self))
         self.TexturedModelLayer.stateChanged.connect(lambda: pv_utils.add_textured_models(self))
+        self.GeomLayer.stateChanged.connect(lambda: pv_utils.add_geomorphometrics(self))
         self.camera_cb.currentTextChanged.connect(
             lambda: configuration.set_camera_model(self.project_config, self.camera_cb.currentText()))
 
@@ -150,7 +154,7 @@ class Window(QMainWindow, Ui_MainWindow):
         if dlg.exec():
             print("Reconstruction success!")
         else:
-            print("Cancel!")
+            print("Cancel !")
         project.save_project(self)
 
     def launch_reprojection(self):
@@ -158,7 +162,15 @@ class Window(QMainWindow, Ui_MainWindow):
         if dlg.exec():
             print("Reconstruction success!")
         else:
-            print("Cancel!")
+            print("Cancel !")
+        project.save_project(self)
+
+    def launch_geomorphometrics(self):
+        dlg = geom.GeomDialog(self)
+        if dlg.exec():
+            print("Geomorphometrics success!")
+        else:
+            print("Cancel !")
         project.save_project(self)
 
     def launch_navigation(self):
@@ -166,7 +178,7 @@ class Window(QMainWindow, Ui_MainWindow):
         if dlg.exec():
             print(self.nav_data)
         else:
-            print("Cancel!")
+            print("Cancel !")
         project.save_project(self)
 
     def launch_add_img(self):
@@ -174,7 +186,7 @@ class Window(QMainWindow, Ui_MainWindow):
         if dlg.exec():
             print("ok")
         else:
-            print("Cancel!")
+            print("Cancel !")
         project.save_project(self)
 
     def launch_add_video(self):

@@ -34,9 +34,6 @@ Attributes:
     finished (QtCore.pyqtSignal): Signal emitted when the reconstruction process is finished.
 """
 
-    def __init__(self, gui, image_path, project_path, camera, vocab_tree_path, nav_data, options):
-        ...
-
     step = QtCore.pyqtSignal(str)
     prog_val = QtCore.pyqtSignal(int)
     nb_models = QtCore.pyqtSignal(str)

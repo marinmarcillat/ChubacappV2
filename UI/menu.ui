@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1293</width>
+    <width>1346</width>
     <height>754</height>
    </rect>
   </property>
@@ -351,7 +351,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QWidget" name="carsWidget" native="true">
+             <widget class="QWidget" name="modelWidget" native="true">
               <property name="enabled">
                <bool>true</bool>
               </property>
@@ -441,6 +441,22 @@
                  </property>
                  <property name="checkable">
                   <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="GeomLayer">
+                 <property name="font">
+                  <font>
+                   <pointsize>10</pointsize>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Geomorphometrics</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="icons/resource.qrc">
+                   <normaloff>:/icons/slope.ico</normaloff>:/icons/slope.ico</iconset>
                  </property>
                 </widget>
                </item>
@@ -784,7 +800,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1293</width>
+     <width>1346</width>
      <height>21</height>
     </rect>
    </property>
@@ -822,7 +838,7 @@
     </property>
     <addaction name="Reconstruction3D"/>
     <addaction name="Orthomosaic"/>
-    <addaction name="Gomorphomtrics"/>
+    <addaction name="Geomorphomtrics"/>
    </widget>
    <widget class="QMenu" name="menuAnnotations">
     <property name="title">
@@ -926,7 +942,7 @@
    </attribute>
    <addaction name="Reconstruction3D"/>
    <addaction name="Orthomosaic"/>
-   <addaction name="Gomorphomtrics"/>
+   <addaction name="Geomorphomtrics"/>
   </widget>
   <widget class="QToolBar" name="toolBar_4">
    <property name="windowTitle">
@@ -1091,7 +1107,7 @@
     <string>Open project</string>
    </property>
   </action>
-  <action name="Gomorphomtrics">
+  <action name="Geomorphomtrics">
    <property name="icon">
     <iconset resource="icons/resource.qrc">
      <normaloff>:/icons/slope.ico</normaloff>:/icons/slope.ico</iconset>
@@ -1225,7 +1241,7 @@
   <connection>
    <sender>pushButton_2</sender>
    <signal>toggled(bool)</signal>
-   <receiver>carsWidget</receiver>
+   <receiver>modelWidget</receiver>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">

@@ -3,6 +3,7 @@ import trimesh
 import numpy as np
 import os
 import pandas as pd
+from pyntcloud import PyntCloud
 import camera
 import coord_conversions
 from openmvg_json_file_handler import OpenMVGJSONFileHandler
@@ -90,6 +91,42 @@ def add_3d_models(qt):
         for actor in qt.plotter_actors['3D_models']:
             _ = plotter.remove_actor(actor)
         qt.plotter_actors['3D_models'] = []
+
+
+def add_geomorphometrics(qt):
+    """
+    Adds 3D models to the plotter based on the project configuration.
+
+    Args:
+        qt: The main window object.
+
+    Returns:
+        None.
+    """
+    plotter, project_config = qt.plotter, qt.project_config
+    if qt.GeomLayer.isChecked():
+        geoms = project_config['outputs']['geomorphometrics']
+        if len(geoms) == 0:
+            print("Missing geomorphometrics !")
+        else:
+            geom = geoms[0]  # Temporary, awaiting possibility to select
+            pcd_path = geom['pcd_path']
+
+            pcd = PyntCloud.from_file(pcd_path)
+            point_cloud = pv.PolyData(np.asarray(pcd.points[['x', 'y', 'z']]))
+            scalars = pcd.points.columns.to_list()
+            scalars = [x for x in scalars if
+                       not (x.startswith("__") or x.startswith("normal_") or x in ["x", "y", "z"])]
+            for scalar in scalars:
+                point_cloud[scalar] = pcd.points[[scalar]]
+
+            plotter.enable_eye_dome_lighting()
+            actor = plotter.add_mesh(point_cloud)
+            qt.plotter_actors['geomorphometrics'].append(actor)
+    else:
+        for actor in qt.plotter_actors['geomorphometrics']:
+            _ = plotter.remove_actor(actor)
+        qt.plotter_actors['geomorphometrics'] = []
 
 
 def add_nav_camera(qt):
