@@ -18,23 +18,33 @@ def get_reproj_cameras(hit_maps_dir):
     hit_maps = os.listdir(hit_maps_dir)
     cam_list = {}
     for hm in hit_maps:
-        img = hm.rsplit('.', maxsplit=1)[0]
-        str_dt = img.rsplit('.', maxsplit=1)[0]
-        date_object = datetime.strptime(str_dt, "%Y%m%dT%H%M%S.%fZ")
-        hm_path = os.path.join(hit_maps_dir, hm)
-        cam_list[img] = {"datetime": date_object, "hm": hm_path}
+        if hm.endswith('.npy'):
+            imprint = 0
+            if hm.startswith('imprint'):
+                hm.removeprefix('imprint_')
+                imprint = 1
+            img = hm.rsplit('.', maxsplit=1)[0]
+            str_dt = img.rsplit('.', maxsplit=1)[0]
+            date_object = datetime.strptime(str_dt, "%Y%m%dT%H%M%S.%fZ")
+            hm_path = os.path.join(hit_maps_dir, hm)
+            cam_list[img] = {"datetime": date_object, "hm": hm_path, "imprint_only": imprint}
     cam_df = pd.DataFrame.from_dict(cam_list, orient='index')
     cam_df['image_name'] = cam_df.index
     return cam_df
 
 
 class annotationTo3D():
-    def __init__(self, annotation_path: str, hit_maps_dir: str, video_dir: str = None):
+    def __init__(self, annotation_path: str, hit_maps_dir: str, video_dir: str = None, video_time_delta: bool =  False):
         self.annotation_path = annotation_path
         self.hit_maps_dir = hit_maps_dir
         self.video_dir = video_dir
+        self.video_time_delta = video_time_delta
 
         self.reproj_cameras = get_reproj_cameras(self.hit_maps_dir)
+        if self.video_time_delta:
+            self.reproj_cameras = self.reproj_cameras[self.reproj_cameras.imprint_only]
+        else:
+            self.reproj_cameras = self.reproj_cameras[not self.reproj_cameras.imprint_only]
 
         self.min_x = self.min_y = 0
         self.max_x = 0
@@ -197,11 +207,12 @@ class reprojector(QtCore.QThread):
     prog_val = QtCore.pyqtSignal(int)
     finished = QtCore.pyqtSignal()
 
-    def __init__(self, model, sfm, images, export):
+    def __init__(self, model, sfm, export, imprints_only=False):
         super(reprojector, self).__init__()
         self.running = True
 
         self.export = export
+        self.imprints_only = imprints_only
         mesh = trimesh.load(model)
         self.intersector = trimesh.ray.ray_pyembree.RayMeshIntersector(mesh)
         self.scene = trimesh.Scene([mesh])
@@ -223,7 +234,15 @@ class reprojector(QtCore.QThread):
         self.running = False
 
     def save_hit_map(self, cam, hit_map):
-        export_path = os.path.join(self.export, cam.get_relative_fp())
+        if self.imprints_only:
+            export_path = os.path.join(self.export, "imprint_" + cam.get_relative_fp())
+            s1 = hit_map[0][:-1]
+            s2 = hit_map[:, -1][:-1]
+            s3 = np.flip(hit_map[-1], 0)[:-1]
+            s4 = np.flip(hit_map[:, 0], 0)
+            hit_map = np.concatenate((s1, s2, s3, s4), axis=0).astype('float')
+        else:
+            export_path = os.path.join(self.export, cam.get_relative_fp())
         np.save(export_path, hit_map)
 
     def convert_to_hit_map(self, cam):

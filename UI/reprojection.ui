@@ -40,6 +40,16 @@
       </widget>
      </item>
      <item>
+      <widget class="QCheckBox" name="Imprints">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>Imprints only</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="hit_map_launch">
        <property name="text">
         <string>Generate hit maps</string>

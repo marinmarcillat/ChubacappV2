@@ -51,9 +51,8 @@ class rpDialog(QDialog, Ui_Dialog_reproj):
         if model is not None:
             model_path = model['model_path']
             sfm_path = model['sfm']
-            image_path = self.project_config['inputs']['image_path']
 
-            self.reprojector = reproject.reprojector(model_path, sfm_path, image_path, exp_path)
+            self.reprojector = reproject.reprojector(model_path, sfm_path, exp_path, self.Imprints.isChecked())
             self.reprojector.prog_val.connect(self.set_prog)
             self.reprojector.finished.connect(self.end_get_hit_maps)
             self.reprojector.start()
