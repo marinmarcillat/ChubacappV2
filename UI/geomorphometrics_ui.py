@@ -95,7 +95,6 @@ class Ui_Dialog(object):
         self.verticalLayout.addLayout(self.horizontalLayout_3)
 
         self.retranslateUi(Dialog)
-        self.buttonBox.accepted.connect(Dialog.accept) # type: ignore
         self.buttonBox.rejected.connect(Dialog.reject) # type: ignore
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
@@ -112,3 +111,13 @@ class Ui_Dialog(object):
         self.TRI.setText(_translate("Dialog", "TRI"))
         self.GC.setText(_translate("Dialog", "Gausian Curv."))
         self.VRM.setText(_translate("Dialog", "VRM"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    Dialog = QtWidgets.QDialog()
+    ui = Ui_Dialog()
+    ui.setupUi(Dialog)
+    Dialog.show()
+    sys.exit(app.exec_())

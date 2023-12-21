@@ -1,6 +1,7 @@
 import camera
 from openmvg_json_file_handler import OpenMVGJSONFileHandler
 import pyembree
+from reprojection.contour_finding import find_contour
 import itertools
 import numpy as np
 import trimesh
@@ -9,9 +10,9 @@ import video_annotations
 import ast
 from math import dist
 import pandas as pd
+from tqdm import tqdm
 from datetime import datetime
 from PyQt5 import QtCore
-import export_reprojection
 
 
 def get_reproj_cameras(hit_maps_dir):
@@ -19,39 +20,30 @@ def get_reproj_cameras(hit_maps_dir):
     cam_list = {}
     for hm in hit_maps:
         if hm.endswith('.npy'):
-            imprint = 0
-            if hm.startswith('imprint'):
-                hm.removeprefix('imprint_')
-                imprint = 1
+            hm_path = os.path.join(hit_maps_dir, hm)
             img = hm.rsplit('.', maxsplit=1)[0]
             str_dt = img.rsplit('.', maxsplit=1)[0]
             date_object = datetime.strptime(str_dt, "%Y%m%dT%H%M%S.%fZ")
-            hm_path = os.path.join(hit_maps_dir, hm)
-            cam_list[img] = {"datetime": date_object, "hm": hm_path, "imprint_only": imprint}
+            cam_list[img] = {"datetime": date_object, "hm": hm_path}
     cam_df = pd.DataFrame.from_dict(cam_list, orient='index')
     cam_df['image_name'] = cam_df.index
     return cam_df
 
 
 class annotationTo3D():
-    def __init__(self, annotation_path: str, hit_maps_dir: str, video_dir: str = None, video_time_delta: bool =  False):
+    def __init__(self, annotation_path: str, hit_maps_dir: str, report_type: bool, wholeframe_only: bool =  False):
         self.annotation_path = annotation_path
         self.hit_maps_dir = hit_maps_dir
-        self.video_dir = video_dir
-        self.video_time_delta = video_time_delta
+        self.wholeframe_only = wholeframe_only
+        self.report_type = report_type
 
         self.reproj_cameras = get_reproj_cameras(self.hit_maps_dir)
-        if self.video_time_delta:
-            self.reproj_cameras = self.reproj_cameras[self.reproj_cameras.imprint_only]
-        else:
-            self.reproj_cameras = self.reproj_cameras[not self.reproj_cameras.imprint_only]
 
         self.min_x = self.min_y = 0
         self.max_x = 0
         self.max_y = 0
 
         self.min_radius = 0.01
-        self.points_bound = None
 
     def annotation2hitpoint(self, ann_coords, hit_map):
         (x, y) = ann_coords
@@ -63,27 +55,19 @@ class annotationTo3D():
             return coord
         return None
 
-    def get_image_bound(self):
-        # List of points corresponding to the image bound
-        edge1 = [(x, self.min_y + 1) for x in range(self.min_x + 1, self.max_x - 1)]
-        edge2 = [(self.max_x - 1, y) for y in range(self.min_y + 1, self.max_y - 1)]
-        edge3 = [(x, self.max_y - 1) for x in range(self.max_x - 1, self.min_x + 1, -1)]
-        edge4 = [(self.min_x + 1, y) for y in range(self.max_y - 1, self.min_y + 1, -1)]
-        points_bound = edge1 + edge2 + edge3 + edge4
-        self.points_bound = list(itertools.chain(*points_bound))
-
     def get_hit_map(self, hit_map_path):
         hit_map = np.load(hit_map_path)
         self.max_x, self.max_y = hit_map.shape[:2]
-        self.get_image_bound()
-        return hit_map
+        contour = find_contour(hit_map)
+        return hit_map, contour
 
     def reproject_annotations(self):
-        if self.video_dir is not None:
+        if self.report_type is not None:
             print("Retrieve video annotations tracks...")
-            annotations = video_annotations.get_annotations_tracks(self.annotation_path, self.reproj_cameras,
-                                                                   self.video_dir)
+            annotations = video_annotations.get_annotations_tracks(self.annotation_path, self.reproj_cameras)
             annotations = annotations.rename(columns={"image_name": "filename"})
+            if self.wholeframe_only:
+                annotations = annotations[annotations['shape_name'] == 'WholeFrame']
         else:
             annotations = pd.read_csv(self.annotation_path, sep=",")
             annotations['points'] = annotations['points'].apply(lambda x: ast.literal_eval(x))
@@ -91,21 +75,21 @@ class annotationTo3D():
         point = []
         polygon = []
         line = []
-        for image in self.reproj_cameras['image_name']:
+        annotation_output_dir = os.path.dirname(self.annotation_path)
+        print("Starting reprojection...")
+        for image in tqdm(self.reproj_cameras['image_name']):
             ann_img = annotations.loc[annotations['filename'] == image]
             result = self.reproject(ann_img, image, False)
             point.extend(result[0])
             line.extend(result[1])
             polygon.extend(result[2])
-        point_pd = pd.DataFrame(point, columns=['points', 'label', 'label_hier', 'filename', 'ann_id', 'radius'])
-        line_pd = pd.DataFrame(line, columns=['points', 'label', 'label_hier', 'filename', 'ann_id'])
-        polygon_pd = pd.DataFrame(polygon, columns=['points', 'label', 'label_hier', 'filename', 'ann_id'])
+            point_pd = pd.DataFrame(point, columns=['points', 'label', 'label_hier', 'filename', 'ann_id', 'radius'])
+            line_pd = pd.DataFrame(line, columns=['points', 'label', 'label_hier', 'filename', 'ann_id'])
+            polygon_pd = pd.DataFrame(polygon, columns=['points', 'label', 'label_hier', 'filename', 'ann_id', "misses"])
 
-        annotation_output_dir = os.path.dirname(self.annotation_path)
-
-        point_pd.to_pickle(os.path.join(annotation_output_dir, 'points.pkl'))
-        line_pd.to_pickle(os.path.join(annotation_output_dir, 'lines.pkl'))
-        polygon_pd.to_pickle(os.path.join(annotation_output_dir, 'polygons.pkl'))
+            point_pd.to_pickle(os.path.join(annotation_output_dir, 'points.pkl'))
+            line_pd.to_pickle(os.path.join(annotation_output_dir, 'lines.pkl'))
+            polygon_pd.to_pickle(os.path.join(annotation_output_dir, 'polygons.pkl'))
 
         return annotation_output_dir
 
@@ -114,16 +98,16 @@ class annotationTo3D():
         polygon = []
         line = []
         image_info = self.reproj_cameras[self.reproj_cameras['image_name'] == image].iloc[0]
-        hit_map = self.get_hit_map(image_info['hm'])
+        hit_map, contour = self.get_hit_map(image_info['hm'])
         if label:
-            annotations['shape_name'] = 'Rectangle'
-            annotations['points'] = self.points_bound
+            annotations['shape_name'] = 'WholeFrame'
+            annotations['points'] = contour
             annotations['annotation_id'] = -999
         else:
             image_bound = pd.DataFrame({
                 'filename': [image],
-                'shape_name': ['Rectangle'],
-                'points': [self.points_bound],
+                'shape_name': ['WholeFrame'],
+                'points': [contour],
                 'label_name': ['bound'],
                 'label_hierarchy': ['bound'],
                 'annotation_id': [-999],
@@ -184,21 +168,25 @@ class annotationTo3D():
 
             elif ann['shape_name'] in ['Polygon', 'Rectangle', "WholeFrame"]:  # if geometry is a polygon or rectangle
                 if ann['shape_name'] == "WholeFrame":
-                    vertexes = self.points_bound
+                    vertexes = contour
                 else:
                     vertexes = ann['points']
                 list_coord = list(zip(*[iter(vertexes)] * 2))
                 points_out = []
+                count = 0
                 for i in list_coord:  # For all the points of the polygone
                     # get the location of the intersection between ray and target
                     coord = self.annotation2hitpoint((i[0], i[1]), hit_map)
 
                     if coord is not None:
                         points_out.append([coord[0], coord[1], coord[2]])
+                    else:
+                        count+=1
+                        print("stop")
                 if points_out:  # If more than one point exist
                     polygon.append(
                         [points_out, ann['label_name'], ann['label_hierarchy'], ann['filename'],
-                         ann['annotation_id']])
+                         ann['annotation_id'], count])
 
         return point, line, polygon
 
@@ -207,12 +195,11 @@ class reprojector(QtCore.QThread):
     prog_val = QtCore.pyqtSignal(int)
     finished = QtCore.pyqtSignal()
 
-    def __init__(self, model, sfm, export, imprints_only=False):
+    def __init__(self, model, sfm, export):
         super(reprojector, self).__init__()
         self.running = True
 
         self.export = export
-        self.imprints_only = imprints_only
         mesh = trimesh.load(model)
         self.intersector = trimesh.ray.ray_pyembree.RayMeshIntersector(mesh)
         self.scene = trimesh.Scene([mesh])
@@ -234,15 +221,7 @@ class reprojector(QtCore.QThread):
         self.running = False
 
     def save_hit_map(self, cam, hit_map):
-        if self.imprints_only:
-            export_path = os.path.join(self.export, "imprint_" + cam.get_relative_fp())
-            s1 = hit_map[0][:-1]
-            s2 = hit_map[:, -1][:-1]
-            s3 = np.flip(hit_map[-1], 0)[:-1]
-            s4 = np.flip(hit_map[:, 0], 0)
-            hit_map = np.concatenate((s1, s2, s3, s4), axis=0).astype('float')
-        else:
-            export_path = os.path.join(self.export, cam.get_relative_fp())
+        export_path = os.path.join(self.export, cam.get_relative_fp())
         np.save(export_path, hit_map)
 
     def convert_to_hit_map(self, cam):

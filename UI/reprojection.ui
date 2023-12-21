@@ -40,16 +40,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="Imprints">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="text">
-        <string>Imprints only</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QPushButton" name="hit_map_launch">
        <property name="text">
         <string>Generate hit maps</string>
@@ -103,6 +93,16 @@
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="wholeframe_only">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Whole_Frame only</string>
        </property>
       </widget>
      </item>

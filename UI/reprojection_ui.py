@@ -35,10 +35,6 @@ class Ui_Dialog(object):
         self.models3D.setSizePolicy(sizePolicy)
         self.models3D.setObjectName("models3D")
         self.horizontalLayout.addWidget(self.models3D)
-        self.Imprints = QtWidgets.QCheckBox(Dialog)
-        self.Imprints.setEnabled(True)
-        self.Imprints.setObjectName("Imprints")
-        self.horizontalLayout.addWidget(self.Imprints)
         self.hit_map_launch = QtWidgets.QPushButton(Dialog)
         self.hit_map_launch.setObjectName("hit_map_launch")
         self.horizontalLayout.addWidget(self.hit_map_launch)
@@ -73,6 +69,10 @@ class Ui_Dialog(object):
         self.annotation_cb.setSizePolicy(sizePolicy)
         self.annotation_cb.setObjectName("annotation_cb")
         self.horizontalLayout_2.addWidget(self.annotation_cb)
+        self.wholeframe_only = QtWidgets.QCheckBox(Dialog)
+        self.wholeframe_only.setEnabled(False)
+        self.wholeframe_only.setObjectName("wholeframe_only")
+        self.horizontalLayout_2.addWidget(self.wholeframe_only)
         self.reproject_launch = QtWidgets.QPushButton(Dialog)
         self.reproject_launch.setEnabled(False)
         self.reproject_launch.setObjectName("reproject_launch")
@@ -86,7 +86,17 @@ class Ui_Dialog(object):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Reprojection"))
         self.label_2.setText(_translate("Dialog", "3D model"))
-        self.Imprints.setText(_translate("Dialog", "Imprints only"))
         self.hit_map_launch.setText(_translate("Dialog", "Generate hit maps"))
         self.label_3.setText(_translate("Dialog", "Annotations"))
+        self.wholeframe_only.setText(_translate("Dialog", "Whole_Frame only"))
         self.reproject_launch.setText(_translate("Dialog", "Reproject"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    Dialog = QtWidgets.QDialog()
+    ui = Ui_Dialog()
+    ui.setupUi(Dialog)
+    Dialog.show()
+    sys.exit(app.exec_())

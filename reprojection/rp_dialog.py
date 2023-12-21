@@ -30,7 +30,7 @@ class rpDialog(QDialog, Ui_Dialog_reproj):
         self.progressBar.setValue(val)
 
     def enable_reproject(self):
-        obj_to_enable = [self.label_3, self.annotation_cb, self.reproject_launch]
+        obj_to_enable = [self.label_3, self.annotation_cb, self.reproject_launch, self.wholeframe_only]
         for obj in obj_to_enable:
             obj.setDisabled(False)
 
@@ -52,7 +52,7 @@ class rpDialog(QDialog, Ui_Dialog_reproj):
             model_path = model['model_path']
             sfm_path = model['sfm']
 
-            self.reprojector = reproject.reprojector(model_path, sfm_path, exp_path, self.Imprints.isChecked())
+            self.reprojector = reproject.reprojector(model_path, sfm_path, exp_path)
             self.reprojector.prog_val.connect(self.set_prog)
             self.reprojector.finished.connect(self.end_get_hit_maps)
             self.reprojector.start()
@@ -75,11 +75,8 @@ class rpDialog(QDialog, Ui_Dialog_reproj):
         if report is not None:
             rep_type = report['rep_type']
             rep_path = report['path']
-            video_dir = None
-            if rep_type == "video":
-                video_dir = self.project_config['inputs']['video_path']
 
-            self.annotation_reprojector = reproject.annotationTo3D(rep_path, hit_maps_path, video_dir)
+            self.annotation_reprojector = reproject.annotationTo3D(rep_path, hit_maps_path, rep_type, self.wholeframe_only.isChecked())
 
             output_dir = self.annotation_reprojector.reproject_annotations()
             self.project_config['outputs']['3D_annotation_path'] = output_dir
