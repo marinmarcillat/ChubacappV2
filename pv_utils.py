@@ -92,6 +92,23 @@ def add_3d_models(qt):
             _ = plotter.remove_actor(actor)
         qt.plotter_actors['3D_models'] = []
 
+def parse_point_clouds(point_cloud_dir):
+    pcd_path_list = []
+    for file in os.listdir(point_cloud_dir):
+        if file.endswith('.pcd'):
+            pcd_path_list.append(os.path.join(point_cloud_dir, file))
+    point_cloud_list = []
+    for pcd_path in pcd_path_list:
+        pcd = PyntCloud.from_file(pcd_path)
+        point_cloud = pv.PolyData(np.asarray(pcd.points[['x', 'y', 'z']]))
+        scalars = pcd.points.columns.to_list()
+        scalars = [x for x in scalars if
+                   not (x.startswith("__") or x.startswith("normal_") or x in ["x", "y", "z"])]
+        for scalar in scalars:
+            point_cloud[scalar] = pcd.points[[scalar]]
+        point_cloud_list.append(point_cloud)
+    return point_cloud_list
+
 
 def add_geomorphometrics(qt):
     """

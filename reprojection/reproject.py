@@ -8,6 +8,7 @@ import trimesh
 import os
 import video_annotations
 import ast
+import utility
 from math import dist
 import pandas as pd
 from tqdm import tqdm
@@ -31,11 +32,12 @@ def get_reproj_cameras(hit_maps_dir):
 
 
 class annotationTo3D():
-    def __init__(self, annotation_path: str, hit_maps_dir: str, report_type: bool, wholeframe_only: bool =  False):
+    def __init__(self, annotation_path: str, hit_maps_dir: str, report_type: bool, wholeframe_only: bool =  False, reprojected_annotations_dir: str = None):
         self.annotation_path = annotation_path
         self.hit_maps_dir = hit_maps_dir
         self.wholeframe_only = wholeframe_only
         self.report_type = report_type
+        self.reprojected_annotations_dir = reprojected_annotations_dir
 
         self.reproj_cameras = get_reproj_cameras(self.hit_maps_dir)
 
@@ -75,7 +77,6 @@ class annotationTo3D():
         point = []
         polygon = []
         line = []
-        annotation_output_dir = os.path.dirname(self.annotation_path)
         print("Starting reprojection...")
         for image in tqdm(self.reproj_cameras['image_name']):
             ann_img = annotations.loc[annotations['filename'] == image]
@@ -87,11 +88,12 @@ class annotationTo3D():
             line_pd = pd.DataFrame(line, columns=['points', 'label', 'label_hier', 'filename', 'ann_id'])
             polygon_pd = pd.DataFrame(polygon, columns=['points', 'label', 'label_hier', 'filename', 'ann_id', "misses"])
 
-            point_pd.to_pickle(os.path.join(annotation_output_dir, 'points.pkl'))
-            line_pd.to_pickle(os.path.join(annotation_output_dir, 'lines.pkl'))
-            polygon_pd.to_pickle(os.path.join(annotation_output_dir, 'polygons.pkl'))
+            point_pd.to_pickle(os.path.join(self.reprojected_annotations_dir, 'points.pkl'))
+            line_pd.to_pickle(os.path.join(self.reprojected_annotations_dir, 'lines.pkl'))
+            polygon_pd.to_pickle(os.path.join(self.reprojected_annotations_dir, 'polygons.pkl'))
 
-        return annotation_output_dir
+
+        return self.reprojected_annotations_dir
 
     def reproject(self, annotations, image, label):
         point = []

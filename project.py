@@ -27,11 +27,10 @@ project_template = {
         '3D_model': False,
         'orthomosaic': False,
         'geomorpho': False,
-        '3D_annotations': False,
         '3D_models': [],
         'orthomosaic_path': '',
         'geomorphometrics': [],
-        '3D_annotation_path': '',
+        'reprojected_annotations': [],
         'hit_maps': ''
     },
     'vocab_tree': r"configurations/vocab_trees/vocab_tree_flickr100K_words32K.bin"
@@ -52,6 +51,7 @@ def read_json(file_path):
         with open(file_path, "r") as f:
             return json.load(f)
     except Exception:
+        print("Error reading, please check your project json file and try again.")
         return None
 
 
@@ -67,7 +67,7 @@ def write_json(file_path, project_config):
         None.
     """
     with open(file_path, "w") as outfile:
-        json.dump(project_config, outfile)
+        json.dump(project_config, outfile, indent=4)
 
 
 def create_json(name, directory):

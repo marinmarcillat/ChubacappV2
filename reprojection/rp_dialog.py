@@ -75,11 +75,18 @@ class rpDialog(QDialog, Ui_Dialog_reproj):
         if report is not None:
             rep_type = report['rep_type']
             rep_path = report['path']
+            reprojected_annotation_path = os.path.join(self.project_config['project_directory'], "reprojected_annotations")
+            utility.create_dir(reprojected_annotation_path)
 
-            self.annotation_reprojector = reproject.annotationTo3D(rep_path, hit_maps_path, rep_type, self.wholeframe_only.isChecked())
+            self.annotation_reprojector = reproject.annotationTo3D(rep_path, hit_maps_path, rep_type, self.wholeframe_only.isChecked(), reprojected_annotation_path)
 
             output_dir = self.annotation_reprojector.reproject_annotations()
-            self.project_config['outputs']['3D_annotation_path'] = output_dir
+            self.project_config['outputs']['reprojected_annotations'].append({
+                "reprojected_annotation_dir": output_dir,
+                "report_path": rep_path,
+                "report_type": rep_type,
+                "report_name": rep_name,
+            })
 
 
         print("Reprojection done !")

@@ -27,6 +27,7 @@ sys.path.append(reproj_dir)
 
 import reconstruction.rc_dialog as rc
 import reprojection.rp_dialog as rp
+import reprojection.volume_stat_dialog as vs
 import geomorphometrics.geomorphometrics_dialog as geom
 
 """
@@ -90,7 +91,7 @@ class Window(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         self.setWindowIcon(QtGui.QIcon('Logo-Ifremer.png'))
-        self.setGeometry(100, 100, 1600, 1200)
+        self.setGeometry(0, 25, 1600, 1200)
 
         sys.stdout = EmittingStream(textWritten=self.normalOutputWritten)
 
@@ -131,6 +132,7 @@ class Window(QMainWindow, Ui_MainWindow):
         self.AddAnnotation.triggered.connect(self.launch_add_annotations)
         self.Add3DModel.triggered.connect(self.launch_add_3dmodel)
         self.Reprojection.triggered.connect(self.launch_reprojection)
+        self.Annotation_filter.triggered.connect(self.launch_volume_stat)
         self.Geomorphomtrics.triggered.connect(self.launch_geomorphometrics)
         self.NavLayer.stateChanged.connect(lambda: pv_utils.add_nav_camera(self))
         self.ModelLayer.stateChanged.connect(lambda: pv_utils.add_3d_models(self))
@@ -161,6 +163,14 @@ class Window(QMainWindow, Ui_MainWindow):
         dlg = rp.rpDialog(self)
         if dlg.exec():
             print("Reconstruction success!")
+        else:
+            print("Cancel !")
+        project.save_project(self)
+
+    def launch_volume_stat(self):
+        dlg = vs.VolStatDialog(self)
+        if dlg.exec():
+            print("Volume statistics success!")
         else:
             print("Cancel !")
         project.save_project(self)
