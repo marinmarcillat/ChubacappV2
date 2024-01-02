@@ -7,6 +7,41 @@ def create_dir(dir):
         os.mkdir(dir)
     return dir
 
+def get_geomorphometrics_scales(project_config):
+    geomorphometrics = project_config["outputs"]['geomorphometrics']
+    if len(geomorphometrics) != 0:
+        return [str(scale['scale']) for scale in project_config["outputs"]['geomorphometrics']]
+    else:
+        return []
+
+
+def get_geomorphometric_scalars(project_config, scale):
+    geomorphometrics = project_config["outputs"]['geomorphometrics']
+    if len(geomorphometrics) == 0 or scale == 0:
+        return []
+    geomorphometric = next((item for item in geomorphometrics if item["scale"] == float(scale)), None)
+    if geomorphometric is None:
+        return []
+    pcd_path = geomorphometric["pcd_path"]
+    with open(pcd_path, encoding="ANSI") as file:
+        i = 0
+        for item in file:
+            if i == 2:
+                s = item
+            if i == 3:
+                break
+            i += 1
+    scalars = s.split(' ')
+    scalars = [
+        x
+        for x in scalars
+        if not x.startswith("__")
+        and not x.startswith("normal_")
+        and x not in ["x", "y", "z", r"_\n", "FIELDS"]
+    ]
+    return scalars
+
+
 def check_radial_distortion(radial_distortion, camera_name, op=None):
     """Check if the radial distortion is compatible with Blender."""
 

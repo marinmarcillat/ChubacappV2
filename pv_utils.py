@@ -92,11 +92,9 @@ def add_3d_models(qt):
             _ = plotter.remove_actor(actor)
         qt.plotter_actors['3D_models'] = []
 
-def parse_point_clouds(point_cloud_dir):
-    pcd_path_list = []
-    for file in os.listdir(point_cloud_dir):
-        if file.endswith('.pcd'):
-            pcd_path_list.append(os.path.join(point_cloud_dir, file))
+
+def parse_point_clouds(geomorphometrics):
+    pcd_path_list = [geomorphometric['pcd_path'] for geomorphometric in geomorphometrics]
     point_cloud_list = []
     for pcd_path in pcd_path_list:
         pcd = PyntCloud.from_file(pcd_path)
@@ -122,23 +120,18 @@ def add_geomorphometrics(qt):
     """
     plotter, project_config = qt.plotter, qt.project_config
     if qt.GeomLayer.isChecked():
-        geoms = project_config['outputs']['geomorphometrics']
-        if len(geoms) == 0:
+        geomorphometrics = project_config['outputs']['geomorphometrics']
+        scale = qt.geoms_scales.currentText()
+        scalar = qt.geoms_scalar.currentText()
+        if len(geomorphometrics) == 0:
             print("Missing geomorphometrics !")
         else:
-            geom = geoms[0]  # Temporary, awaiting possibility to select
-            pcd_path = geom['pcd_path']
-
-            pcd = PyntCloud.from_file(pcd_path)
-            point_cloud = pv.PolyData(np.asarray(pcd.points[['x', 'y', 'z']]))
-            scalars = pcd.points.columns.to_list()
-            scalars = [x for x in scalars if
-                       not (x.startswith("__") or x.startswith("normal_") or x in ["x", "y", "z"])]
-            for scalar in scalars:
-                point_cloud[scalar] = pcd.points[[scalar]]
+            point_cloud_list = parse_point_clouds(geomorphometrics)
+            point_id = next((i for i, item in enumerate(geomorphometrics) if item["scale"] == float(scale)), None)
+            point_cloud = point_cloud_list[point_id]
 
             plotter.enable_eye_dome_lighting()
-            actor = plotter.add_mesh(point_cloud)
+            actor = plotter.add_mesh(point_cloud, scalars=point_cloud[scalar])
             qt.plotter_actors['geomorphometrics'].append(actor)
     else:
         for actor in qt.plotter_actors['geomorphometrics']:
@@ -218,24 +211,24 @@ def add_textured_models(qt):
 def add_3d_annotations(qt):
     plotter, project_config = qt.plotter, qt.project_config
     if qt.AnnotationsLayer.isChecked():
-        ann_path = project_config['outputs']['3D_annotation_path']
-        if ann_path:
+        annotations = project_config['outputs']['reprojected_annotations']
+        if ann_dir := annotations[0]["reprojected_annotation_dir"]:
             plotter.enable_anti_aliasing('ssaa')
-            points_pd = pd.read_pickle(os.path.join(ann_path, "points.pkl"))
-            filenames = points_pd['filename'].to_list()
-            points = points_pd['points'].to_list()
-
-            actor = plotter.add_points(
-                np.array(points, dtype='float'), render_points_as_spheres=True, point_size=10.0, color = 'red',
-            )
-            qt.plotter_actors['3D_annotations'].append(actor)
-
-            polygons_pd = pd.read_pickle(os.path.join(ann_path, "polygons.pkl"))
-            polygons = polygons_pd[polygons_pd['filename'].isin(filenames)]['points'].to_list()
-            for polygon in polygons:
-                polygon.append(polygon[0])
-                actor = plotter.add_lines(np.array(polygon, dtype='float'), connected=True, color='purple', width=3)
+            points_pd = pd.read_pickle(os.path.join(ann_dir, "points.pkl"))
+            if len(points_pd) > 0:
+                points = points_pd['points'].to_list()
+                actor = plotter.add_points(
+                    np.array(points, dtype='float'), render_points_as_spheres=True, point_size=10.0, color = 'red',
+                )
                 qt.plotter_actors['3D_annotations'].append(actor)
+
+            polygons_pd = pd.read_pickle(os.path.join(ann_dir, "polygons.pkl"))
+            if len(polygons_pd) > 0:
+                polygons = polygons_pd['points'].to_list()
+                for polygon in polygons:
+                    polygon.append(polygon[0])
+                    actor = plotter.add_lines(np.array(polygon, dtype='float'), connected=True, color='purple', width=3)
+                    qt.plotter_actors['3D_annotations'].append(actor)
 
         else:
             print("Missing reprojected_annotations data !")

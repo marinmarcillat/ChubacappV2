@@ -22,6 +22,7 @@ def find_contour(hit_map):
 
     contour = list(itertools.chain(*longest_contour.tolist()))
     contour.append(contour[0])
+    count = 0
     for i in range(len(contour)):
         # Remove padding and inverse y-axis
         coord_point_contour = [contour[i][0] - 10, height - (contour[i][1] - 10)]
@@ -29,12 +30,14 @@ def find_contour(hit_map):
         coord_point_contour = [max(min(coord_point_contour[0], width - 1), 0), max(min(coord_point_contour[1], height - 1), 0)]
         # If contour slightly offset, get the closest point that's hit
         if np.array_equal(hit_map[coord_point_contour[0]][coord_point_contour[1]], [0,0,0]):
-            coord_point_contour = search_around(coord_point_contour, hit_map)
+            coord_point_contour, hit = search_around(coord_point_contour, hit_map)
+            if not hit:
+                count += 1
 
         # Convert to annotation format (y-axis inverted)
         contour[i] = [coord_point_contour[0], hit_map.shape[1] - coord_point_contour[1]]
-    contour = list(itertools.chain(*contour))
-    return contour
+    return list(itertools.chain(*contour))
+
 
 def search_around(point, hm):
     for radius in range(1, 4):
@@ -44,5 +47,5 @@ def search_around(point, hm):
                 y = point[1]+j
                 if 0 <= x < hm.shape[0] and 0 <= y < hm.shape[1]:
                     if not np.array_equal(hm[x][y], [0,0,0]):
-                        return [x, y]
-    return point
+                        return [x, y], True
+    return point, False

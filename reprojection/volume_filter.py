@@ -75,6 +75,7 @@ def summarise_track(point_cloud, track):
     metrics_pd['track'] = track['ann_id']
     return metrics_pd
 
+
 def summarise_polygon(point_cloud, annotations):
     vol = imprint_to_volume(annotations["points"])
     extracted_point_cloud = extract_points_in_volume(point_cloud, vol)
@@ -83,10 +84,11 @@ def summarise_polygon(point_cloud, annotations):
     metrics_pd['track'] = annotations['ann_id']
     return metrics_pd
 
-def stat_summary(point_cloud_dir, annotations, vid_tracks_only):
+
+def stat_summary(geomorphometrics, annotations, vid_tracks_only):
     polygon_summary_pd = None
     tracks_summary_pd = None
-    list_point_cloud = parse_point_clouds(point_cloud_dir)
+    list_point_cloud = parse_point_clouds(geomorphometrics)
 
     track_ids = annotations['ann_id'].unique().tolist()
     track_ids.remove(-999)
@@ -103,7 +105,6 @@ def stat_summary(point_cloud_dir, annotations, vid_tracks_only):
             tracks_summary_pd = summarise_track(point_cloud, tracked_annotations)
         if not vid_tracks_only and len(non_tracked_annotations) != 0:
             polygon_summary_pd = summarise_polygon(point_cloud, non_tracked_annotations)
-
 
     return polygon_summary_pd, tracks_summary_pd
 

@@ -14,6 +14,7 @@ import pv_utils
 import project
 import configuration
 import camera_manager as cm
+import utility
 
 # from scipy import stats
 
@@ -101,7 +102,7 @@ class Window(QMainWindow, Ui_MainWindow):
         self.progress_bar.hide()
 
         self.available_cameras = cm.get_cameras()
-        self.camera_cb.addItems(list(self.available_cameras.keys()))
+
         self.available_trees = configuration.get_vocab_tree()
 
         self.plotter = self.contentWidget
@@ -117,6 +118,8 @@ class Window(QMainWindow, Ui_MainWindow):
 
         self.project_config = project.project_template.copy()
         self.nav_data = pd.DataFrame()
+
+        self.populate_cb()
 
         self.connect_actions()
 
@@ -142,6 +145,22 @@ class Window(QMainWindow, Ui_MainWindow):
         self.GeomLayer.stateChanged.connect(lambda: pv_utils.add_geomorphometrics(self))
         self.camera_cb.currentTextChanged.connect(
             lambda: configuration.set_camera_model(self.project_config, self.camera_cb.currentText()))
+        self.geoms_scales.currentTextChanged.connect(lambda: self.populate_cb(True))
+
+    def populate_cb(self, only_scalar = False):
+        if not only_scalar:
+            self.camera_cb.clear()
+            self.geoms_scales.clear()
+
+            self.camera_cb.addItems(list(self.available_cameras.keys()))
+            self.geoms_scales.addItems(utility.get_geomorphometrics_scales(self.project_config))
+
+        self.geoms_scalar.clear()
+        self.geoms_scalar.addItems(
+            utility.get_geomorphometric_scalars(self.project_config, self.geoms_scales.currentText()))
+
+
+
 
     def normalOutputWritten(self, text):
         """Append text to the QTextEdit."""

@@ -49,7 +49,7 @@ class annotationTo3D():
 
     def annotation2hitpoint(self, ann_coords, hit_map):
         (x, y) = ann_coords
-        if self.min_x < x < self.max_x and self.min_y < y < self.max_y:
+        if self.min_x <= x < self.max_x and self.min_y <= y < self.max_y:
             y = self.max_y - y  # Inverse Y axis
             coord = hit_map[int(x)][int(y)]
             if np.array_equal(coord, [0, 0, 0]):
@@ -176,6 +176,7 @@ class annotationTo3D():
                 list_coord = list(zip(*[iter(vertexes)] * 2))
                 points_out = []
                 count = 0
+                misses_list = []
                 for i in list_coord:  # For all the points of the polygone
                     # get the location of the intersection between ray and target
                     coord = self.annotation2hitpoint((i[0], i[1]), hit_map)
@@ -184,11 +185,12 @@ class annotationTo3D():
                         points_out.append([coord[0], coord[1], coord[2]])
                     else:
                         count+=1
-                        print("stop")
+                        misses_list.append(i)
+                if count > 500:
+                    test = pd.DataFrame(misses_list)
+                    test.to_csv(r"C:\Users\mmarcill\Desktop\test.csv")
                 if points_out:  # If more than one point exist
-                    polygon.append(
-                        [points_out, ann['label_name'], ann['label_hierarchy'], ann['filename'],
-                         ann['annotation_id'], count])
+                    polygon.append([points_out, ann['label_name'], ann['label_hierarchy'], ann['filename'], ann['annotation_id'], count])
 
         return point, line, polygon
 

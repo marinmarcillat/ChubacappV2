@@ -91,6 +91,7 @@ def add_navigation(project_config, navigation_path, nav_type):
 #"date", "time", "camera", "name", "lat", "lon", "depth", "alt", "heading", "pitch", "roll"
 
 def update_interface(qt):
+    qt.populate_cb()
     qt.camera_cb.setCurrentText(qt.project_config['inputs']['camera_model_path'])
 
     p_list = [qt.project_label, qt.image_label, qt.nav_label]

@@ -71,6 +71,7 @@ class GeomDialog(QDialog, Ui_Dialog):
             self.pcdThread.start()
 
             self.project_config['outputs']['geomorphometrics'] = [{'scale': scale,
+                                                                   'model_name': model_name,
                                                                    'pcd_path': os.path.join(
                                                                        os.path.dirname(model_path),
                                                                        'cloud_metrics_{}.pcd'.format(str(scale)))}
