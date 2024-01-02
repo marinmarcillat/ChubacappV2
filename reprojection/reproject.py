@@ -185,10 +185,6 @@ class annotationTo3D():
                         points_out.append([coord[0], coord[1], coord[2]])
                     else:
                         count+=1
-                        misses_list.append(i)
-                if count > 500:
-                    test = pd.DataFrame(misses_list)
-                    test.to_csv(r"C:\Users\mmarcill\Desktop\test.csv")
                 if points_out:  # If more than one point exist
                     polygon.append([points_out, ann['label_name'], ann['label_hierarchy'], ann['filename'], ann['annotation_id'], count])
 
