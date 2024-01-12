@@ -110,7 +110,8 @@ def hierarchical_mapper_gps_prior_command(sparse_model_path, db_path, image_path
         "--image_path", image_path,
         "--Mapper.use_enu_coords", str(1),
         "--Mapper.prior_is_gps", str(1),
-        "--Mapper.use_prior_motion", str(1)
+        "--Mapper.use_prior_motion", str(1),
+        "--Mapper.ba_prior_std_z", str(0.1)
     ]
     if two_view:
         cmd.extend(["--Mapper.tri_ignore_two_view_tracks", "0"])
