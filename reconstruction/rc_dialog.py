@@ -79,10 +79,10 @@ class RcDialog(QDialog, Ui_Dialog):
         refine = self.refine.isChecked()
         matching_neighbors = int(self.num_neighbors.text())
         skip_reconstruction = self.skip_reconstruction.isChecked()
-        two_view = self.two_view.isChecked()
+        ignore_two_view = self.two_view.isChecked()
         img_scaling = int(self.img_scaling.value())
         decimation = float(self.decimation.value())
-        options = [CPU_features, vocab_tree, seq, spatial, refine, matching_neighbors, two_view, img_scaling, decimation, skip_reconstruction]
+        options = [CPU_features, vocab_tree, seq, spatial, refine, matching_neighbors, ignore_two_view, img_scaling, decimation, skip_reconstruction]
 
         self.reconstruction_thread = ReconstructionThread(self, image_path, project_path, camera,
                                                           vocab_tree_path, self.nav_data, options)

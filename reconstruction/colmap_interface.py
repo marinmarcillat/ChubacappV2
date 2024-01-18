@@ -75,15 +75,15 @@ Returns:
         if not os.path.isfile(self.db_path):
             self.run_cmd(self.colmap, ep.create_database_command(self.db_path))
 
-        self.models_path = os.path.join(project_path, 'models')
-        self.sparse_model_path = os.path.join(project_path, 'sparse')
+        self.sparse_model_dir = os.path.join(project_path, 'sparse')
+        self.full_optim_dir = os.path.join(project_path, 'full_optim')
+        self.openMVS_result_dir = os.path.join(project_path, 'openMVS_results')
         self.export_path = os.path.join(project_path, 'export')
-        for path in [self.models_path, self.sparse_model_path, self.export_path]:
-            if not os.path.isdir(path):
-                os.mkdir(path)
+        for dir in [self.sparse_model_dir, self.openMVS_result_dir, self.export_path]:
+            utils.create_dir(dir)
         self.nav_data = nav_data
 
-        self.CPU_features, self.vocab_tree, self.seq, self.spatial, self.refine, self.matching_neighbors, self.two_view, self.img_scaling, self.decimation, self.skip_reconstruction = options
+        self.CPU_features, self.vocab_tree, self.seq, self.spatial, self.refine, self.matching_neighbors, self.ignore_two_view, self.img_scaling, self.decimation, self.skip_reconstruction = options
 
     def run(self):
         """
@@ -244,7 +244,7 @@ Returns:
         self.step.emit('mapping')
         self.run_cmd(self.colmap,
                      ep.hierarchical_mapper_gps_prior_command(self.sparse_model_path, self.db_path, self.image_path,
-                                                              self.two_view))
+                                                              self.ignore_two_view))
 
     def post_sparse_reconstruction(self):
         """
@@ -265,10 +265,12 @@ Returns:
         prog = 0
         tot_len = len(list_models)
         for model in list_models:
-            sparse_model_path = os.path.join(self.sparse_model_path, model)
-            dense_model_path = os.path.join(self.models_path, model)
-            if not os.path.isdir(dense_model_path):
-                os.mkdir(dense_model_path)
+            sparse_path = os.path.join(self.sparse_model_dir, model)
+            full_optim_path = utils.create_dir(os.path.join(self.full_optim_dir, model))
+            openMVS_result_path = utils.create_dir(os.path.join(self.openMVS_result_dir, model))
+
+            for p in [sparse_path, full_optim_path, openMVS_result_path]:
+                utils.create_dir(p)
 
             self.prog_val.emit(round((prog / tot_len) * 100))
             prog += 1
@@ -276,15 +278,16 @@ Returns:
             self.nb_models.emit(f'{prog} / {tot_len}')
             self.gui.normalOutputWritten(s)
 
-            self.step.emit('georegistration')
+            self.step.emit('SFM gps aligner')
             # self.run_cmd(self.colmap, ep.model_aligner_command(sparse_model_path, self.db_path))
-            self.run_cmd(self.colmap, ep.convert_model_command(sparse_model_path))
-            self.get_georegistration_file(sparse_model_path)
-            self.run_cmd(self.colmap, ep.georegistration_command(sparse_model_path))
-            self.run_cmd(self.colmap, ep.convert_model_command(sparse_model_path))
-            self.run_cmd(self.colmap, ep.undistort_image_command(self.image_path, sparse_model_path, dense_model_path))
+            # self.run_cmd(self.colmap, ep.convert_model_command(sparse_model_path))
+            # self.get_georegistration_file(sparse_model_path)
+            # self.run_cmd(self.colmap, ep.georegistration_command(sparse_model_path))
+            self.run_cmd(self.colmap, ep.model_sfm_aligner_command(sparse_path, full_optim_path, self.db_path))
+            # self.run_cmd(self.colmap, ep.convert_model_command(sparse_model_path))
+            self.run_cmd(self.colmap, ep.undistort_image_command(self.image_path, full_optim_path, openMVS_result_path))
             self.run_cmd(os.path.join(self.openMVS, 'InterfaceCOLMAP.exe'),
-                         ep.interface_openmvs_command(dense_model_path))
+                         ep.interface_openmvs_command(openMVS_result_path))
 
     def meshing(self):
         """
@@ -301,11 +304,11 @@ Returns:
     None
 """
 
-        list_models = next(os.walk(self.models_path))[1]
+        list_models = next(os.walk(self.openMVS_result_dir))[1]
         prog = 0
         tot_len = len(list_models)
         for model in list_models:
-            dense_model_path = os.path.join(self.models_path, model)
+            openMVS_result_path = utils.create_dir(os.path.join(self.openMVS_result_dir, model))
 
             self.gui.set_prog(round((prog / tot_len) * 100))
             prog += 1
@@ -315,21 +318,21 @@ Returns:
 
             self.step.emit('dense')
             self.run_cmd(os.path.join(self.openMVS, 'DensifyPointCloud.exe'),
-                         ep.dense_reconstruction_command(dense_model_path, self.openMVS, self.two_view,
+                         ep.dense_reconstruction_command(openMVS_result_path, self.openMVS, self.ignore_two_view,
                                                          self.img_scaling))
 
             self.step.emit('mesh')
             self.run_cmd(os.path.join(self.openMVS, 'ReconstructMesh.exe'),
-                         ep.mesh_reconstruction_command(dense_model_path, self.decimation))
+                         ep.mesh_reconstruction_command(openMVS_result_path, self.decimation))
 
             if self.refine:
                 self.step.emit('refinement')
                 self.gui.normalOutputWritten("Not available yet \r")
 
             self.step.emit('texture')
-            convert_colmap_poses_to_texrecon_dev.colmap2texrecon(os.path.join(dense_model_path, "sparse"),
-                                                                 os.path.join(dense_model_path, "images"))
-            self.run_cmd(self.texrecon, ep.texrecon_texturing_command(dense_model_path))
+            convert_colmap_poses_to_texrecon_dev.colmap2texrecon(os.path.join(openMVS_result_path, "sparse"),
+                                                                 os.path.join(openMVS_result_path, "images"))
+            self.run_cmd(self.texrecon, ep.texrecon_texturing_command(openMVS_result_path))
 
             # self.run_cmd(os.path.join(self.openMVS, 'TextureMesh.exe'), ep.openmvs_texturing_command(dense_model_path))
 
@@ -366,10 +369,10 @@ Returns:
     None
 """
 
-        list_models = next(os.walk(self.models_path))[1]
+        list_models = next(os.walk(self.openMVS_result_dir))[1]
         for model_id, model in enumerate(list_models):
-            files2copy = [os.path.join(self.sparse_model_path, model, "reference_position.txt")]
-            model_dir = os.path.join(self.models_path, model)
+            files2copy = [os.path.join(self.sparse_model_dir, model, "reference_position.txt")]
+            model_dir = os.path.join(self.openMVS_result_dir, model)
             if obj:
                 model_name = 'textured_mesh.obj'
                 mesh_name = "mesh.ply"
@@ -391,8 +394,8 @@ Returns:
             for file in files2copy:
                 copy(file, os.path.join(model_export_path, os.path.basename(file)))
 
-            list_poses = utils.read_images_text(os.path.join(self.sparse_model_path, model, "images.txt"), [0, 0, 0])
-            camera = utils.read_cameras_text(os.path.join(self.sparse_model_path, model, "cameras.txt"))
+            list_poses = utils.read_images_text(os.path.join(self.sparse_model_dir, model, "images.txt"), [0, 0, 0])
+            camera = utils.read_cameras_text(os.path.join(self.sparse_model_dir, model, "cameras.txt"))
             sfm = utils.listposes2sfm(list_poses, camera)
             with open(os.path.join(model_export_path, "sfm_data_temp.json"), 'w') as fp:
                 json.dump(sfm, fp, sort_keys=True, indent=4)
@@ -402,9 +405,9 @@ Returns:
                                                           model_name, lat, long, alt)
 
             self.gui.normalOutputWritten("Removing temporary folders \r")
-            rm = [self.models_path, self.sparse_model_path]
-            for fp in rm:
-                shutil.rmtree(fp)
+            # rm = [self.models_path, self.sparse_model_dir]
+            # for fp in rm:
+            #    shutil.rmtree(fp)
 
             model_dict = {"name": f"mesh_{model_id}", "model_path": os.path.join(model_export_path, "mesh.ply"),
                           "sfm": os.path.join(model_export_path, "sfm_data_temp.json"), "textured_model_path": os.path.join(model_export_path, "textured_mesh.obj")}

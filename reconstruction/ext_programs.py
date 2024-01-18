@@ -102,29 +102,48 @@ def hierarchical_mapper_command(sparse_model_path, db_path, image_path, two_view
     return cmd
 
 
-def hierarchical_mapper_gps_prior_command(sparse_model_path, db_path, image_path, two_view):
+def hierarchical_mapper_gps_prior_command(sparse_model_path, db_path, image_path, ignore_two_view, focal=0, pp=0, dist=0, std_z=0.1):
     cmd = [
         "hierarchical_mapper",
         "--output_path", sparse_model_path,
         "--database_path", db_path,
         "--image_path", image_path,
+        "--Mapper.abs_pose_min_num_inliers", str(20),
+        "--Mapper.ba_refine_focal_length", str(focal),
+        "--Mapper.ba_refine_principal_point", str(pp),
+        "--Mapper.ba_refine_extra_params", str(dist),
+        "--Mapper.ba_global_function_tolerance", "1e-06",
+        "--Mapper.ba_global_max_num_iterations", str(30),
+        "--Mapper.ba_global_max_refinements", str(5),
         "--Mapper.use_enu_coords", str(1),
         "--Mapper.prior_is_gps", str(1),
         "--Mapper.use_prior_motion", str(1),
-        "--Mapper.ba_prior_std_z", str(0.1)
+        "--Mapper.ba_prior_std_z", str(std_z),
+        "--Mapper.tri_ignore_two_view_tracks", str(ignore_two_view),
+        "--Mapper.ba_global_use_robust_loss_on_prior", str(1),
+        "--Mapper.prior_loss_scale", str(11.345),
     ]
-    if two_view:
-        cmd.extend(["--Mapper.tri_ignore_two_view_tracks", "0"])
     return cmd
 
-def model_aligner_command(model_path, db_path):
+def model_sfm_aligner_command(sparse_path, full_optim_path, db_path, std_z = 0.1, refine_calib = 1):
     return [
         "model_sfm_gps_aligner",
-        "--input_path", model_path,
-        "--output_path", model_path,
+        "--input_path", sparse_path,
+        "--output_path", full_optim_path,
         "--database_path", db_path,
         "--ref_is_gps", str(1),
         "--alignment_type,", "enu",
+        "--motion_prior_std_z", str(std_z),
+        "--use_robust_cost_on_motion_prior", str(1),
+        "--robust_prior_huber_cost_squared", str(11.345),
+        "--use_robust_visual_cost", str(1),
+        "--robust_visual_soft_l1_cost_squared", str(5.991),
+        "--refine_extra_params", str(refine_calib),
+        "--refine_focal_length", str(refine_calib),
+        "--refine_principal_point", str(refine_calib),
+        "--ba_max_iterations", str(100),
+        "--nb_ba_refinement", str(5),
+        "--ba_function_tolerance", "1e-06",
     ]
 
 def georegistration_command(model_path):

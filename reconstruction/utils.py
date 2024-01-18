@@ -10,6 +10,10 @@ from time import sleep
 import copy
 import math
 
+def create_dir(dir):
+    if not os.path.isdir(dir):
+        os.mkdir(dir)
+    return dir
 
 def run_cmd(cmd, wait=True):
     pStep = subprocess.Popen(cmd)
