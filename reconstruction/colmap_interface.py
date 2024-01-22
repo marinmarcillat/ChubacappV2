@@ -243,7 +243,7 @@ Returns:
 
         self.step.emit('mapping')
         self.run_cmd(self.colmap,
-                     ep.hierarchical_mapper_gps_prior_command(self.sparse_model_path, self.db_path, self.image_path,
+                     ep.hierarchical_mapper_gps_prior_command(self.sparse_model_dir, self.db_path, self.image_path,
                                                               self.ignore_two_view))
 
     def post_sparse_reconstruction(self):
