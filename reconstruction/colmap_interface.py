@@ -79,7 +79,7 @@ Returns:
         self.full_optim_dir = os.path.join(project_path, 'full_optim')
         self.openMVS_result_dir = os.path.join(project_path, 'openMVS_results')
         self.export_path = os.path.join(project_path, 'export')
-        for dir in [self.sparse_model_dir, self.openMVS_result_dir, self.export_path]:
+        for dir in [self.sparse_model_dir, self.full_optim_dir, self.openMVS_result_dir, self.export_path]:
             utils.create_dir(dir)
         self.nav_data = nav_data
 
@@ -261,7 +261,7 @@ Returns:
     None
 """
 
-        list_models = next(os.walk(self.sparse_model_path))[1]
+        list_models = next(os.walk(self.sparse_model_dir))[1]
         prog = 0
         tot_len = len(list_models)
         for model in list_models:
@@ -278,7 +278,7 @@ Returns:
             self.nb_models.emit(f'{prog} / {tot_len}')
             self.gui.normalOutputWritten(s)
 
-            self.step.emit('SFM gps aligner')
+            self.step.emit('georegistration')
             # self.run_cmd(self.colmap, ep.model_aligner_command(sparse_model_path, self.db_path))
             # self.run_cmd(self.colmap, ep.convert_model_command(sparse_model_path))
             # self.get_georegistration_file(sparse_model_path)
