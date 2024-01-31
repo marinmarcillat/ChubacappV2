@@ -392,8 +392,8 @@ Returns:
             for file in files2copy:
                 copy(file, os.path.join(model_export_path, os.path.basename(file)))
 
-            list_poses = utils.read_images_text(os.path.join(self.sparse_model_dir, model, "images.txt"), [0, 0, 0])
-            camera = utils.read_cameras_text(os.path.join(self.sparse_model_dir, model, "cameras.txt"))
+            list_poses = utils.read_images_text(os.path.join(self.full_optim_dir, model, "images.txt"), [0, 0, 0])
+            camera = utils.read_cameras_text(os.path.join(self.full_optim_dir, model, "cameras.txt"))
             sfm = utils.listposes2sfm(list_poses, camera)
             with open(os.path.join(model_export_path, "sfm_data_temp.json"), 'w') as fp:
                 json.dump(sfm, fp, sort_keys=True, indent=4)
