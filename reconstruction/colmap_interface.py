@@ -199,6 +199,7 @@ Returns:
         if cpu_features:
             config.set('SiftExtraction', 'estimate_affine_shape', str(1))
             config.set('SiftExtraction', 'domain_size_pooling', str(1))
+            config.set('SiftExtraction', 'use_gpu', str(0))
 
         text1 = '\n'.join(['='.join(item) for item in config.items('top')])
         text2 = '\n'.join(['='.join(item) for item in config.items('ImageReader')])
@@ -279,12 +280,9 @@ Returns:
             self.gui.normalOutputWritten(s)
 
             self.step.emit('georegistration')
-            # self.run_cmd(self.colmap, ep.model_aligner_command(sparse_model_path, self.db_path))
-            # self.run_cmd(self.colmap, ep.convert_model_command(sparse_model_path))
-            # self.get_georegistration_file(sparse_model_path)
-            # self.run_cmd(self.colmap, ep.georegistration_command(sparse_model_path))
             self.run_cmd(self.colmap, ep.model_sfm_aligner_command(sparse_path, full_optim_path, self.db_path))
-            # self.run_cmd(self.colmap, ep.convert_model_command(sparse_model_path))
+            self.run_cmd(self.colmap, ep.convert_model_command(full_optim_path))
+            self.get_georegistration_file(full_optim_path)
             self.run_cmd(self.colmap, ep.undistort_image_command(self.image_path, full_optim_path, openMVS_result_path))
             self.run_cmd(os.path.join(self.openMVS, 'InterfaceCOLMAP.exe'),
                          ep.interface_openmvs_command(openMVS_result_path))
@@ -371,7 +369,7 @@ Returns:
 
         list_models = next(os.walk(self.openMVS_result_dir))[1]
         for model_id, model in enumerate(list_models):
-            files2copy = [os.path.join(self.sparse_model_dir, model, "reference_position.txt")]
+            files2copy = [os.path.join(self.full_optim_dir, model, "reference_position.txt")]
             model_dir = os.path.join(self.openMVS_result_dir, model)
             if obj:
                 model_name = 'textured_mesh.obj'
